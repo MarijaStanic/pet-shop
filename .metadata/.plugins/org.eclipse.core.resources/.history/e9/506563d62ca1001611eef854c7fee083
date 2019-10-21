@@ -1,0 +1,92 @@
+var app = angular.module('myApp');
+
+app.controller('ModalCtrl', function(data,$uibModalInstance, UserService, $scope){
+	
+	var self = this;
+	self.data=data;
+	console.log(data);
+	
+    self.roles=[];
+    self.salesUnits=[];
+	
+	self.submit = submit;
+   // self.edit = edit;
+    self.remove = remove;
+    self.reset = reset;
+	
+	UserService.getRoles().then(function(response){
+		self.roles = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+    
+    UserService.getSalesUnits().then(function(response){
+		self.salesUnits = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+    
+    function submit() {
+    	console.log(self.data.id);
+        if(self.data.id===null || self.data.id===undefined){
+            console.log('Saving New User', self.data);
+            createUser(self.data);
+        }else{
+            updateUser(self.data, self.data.id);
+            console.log('User updated with id ', self.data.id);
+        }
+        reset();
+    }
+    
+    function createUser(user){
+        UserService.createUser(user)
+            .then(
+            		closeModal(user),
+            function(errResponse){
+                console.error('Error while creating User');
+            }
+        );
+    }
+ 
+    function updateUser(user, id){
+    	console.log(self.data);
+        UserService.updateUser(user, id)
+            .then(
+            		closeModal(user),
+            function(errResponse){
+                console.error('Error while updating User');
+            }
+        );
+    }
+ 
+    function deleteUser(id){
+        UserService.deleteUser(id)
+            .then(
+            getAllUsers,
+            function(errResponse){
+                console.error('Error while deleting User');
+            }
+        );
+    }
+ 
+    function remove(id){
+        console.log('id to be deleted', id);
+        if(self.user.id === id) {//clean form if the user to be deleted is shown there.
+            reset();
+        }
+        deleteUser(id);
+    }
+ 
+ 
+    function reset(){
+        self.user={id:null,username:'',address:'',email:''};
+        $scope.myForm.$setPristine();
+    }
+    
+    function closeModal(u){
+		$uibModalInstance.close(u);
+	};
+	
+});

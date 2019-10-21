@@ -1,0 +1,38 @@
+var app = angular.module('myApp');
+
+app.controller('IndexController', ['$scope','$location',function($scope,$location) {	
+	if (!$scope.logged) {
+		$location.path('/login');
+	} else {
+		$location.path('/home');
+	}
+}]);
+
+app.controller('LoginController',['$rootScope','$scope','$http','$location','sessionService',function($rootScope,$scope,$http,$location,sessionService){
+	$rootScope.error = false;
+	var vm=this;
+	$scope.login = function(){
+		var config = {
+				params: {
+					username: $scope.username,
+					password: $scope.password
+				}
+		}
+		sessionService.login(config).then(function(response){
+			$rootScope.logged = true;
+			vm.loggedUser = sessionService.getUser();
+			if(sessionService.isAuthorised('ROLE_USER')){
+				$location.path('/home');
+			}else{
+			$location.path('/login');}
+		},function(){
+			$rootScope.logged = false;
+			$rootScope.error = true;
+		})
+	}
+}]);
+
+app.controller('HomeController', function($scope){
+	
+});
+

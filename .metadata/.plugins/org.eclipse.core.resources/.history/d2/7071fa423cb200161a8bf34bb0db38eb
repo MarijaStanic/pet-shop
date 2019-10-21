@@ -1,0 +1,127 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead"
+				ng-bind="customerModalCtrl.data.id===undefined ? 'Customer
+				Registration' : 'Customer Update'"></span>
+				</div>
+			<div class="formcontainer">
+				<form ng-submit="customerModalCtrl.submit()"
+					name="customerModalCtrl.myForm" class="form-horizontal">
+					<input type="hidden" ng-model="customerModalCtrl.data.id" />
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.firstName.$touched && customerModalCtrl.myForm.firstName.$invalid }">
+						<label class="col-md-2 control-lable" for="firstName">First
+							name</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.firstName"
+								id="firstName" name="firstName" class="form-control input-sm"
+								placeholder="Enter first name" required ng-minlength="3" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.firstName.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.lastName.$touched && customerModalCtrl.myForm.lastName.$invalid }">
+						<label class="col-md-2 control-lable" for="lastName">Last
+							name</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.lastName"
+								id="lastName" name="lastName" class="form-control input-sm"
+								placeholder="Enter last name" required ng-minlength="3" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.lastName.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.birthdate.$touched && customerModalCtrl.myForm.birthdate.$invalid }">
+						<label class="col-md-2 control-lable" for="birthdate">Birth
+							Date</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.birthdate"
+								id="birthdate" name="birthdate" class="form-control input-sm"
+								placeholder="Enter Birth Date: yyyy-mm-dd" required
+								ng-pattern="/(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))/" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.brithdate.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.address.$touched && customerModalCtrl.myForm.address.$invalid }">
+						<label class="col-md-2 control-lable" for="address">Address</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.address"
+								id="address" name="address" class="form-control input-sm"
+								placeholder="Enter address" required ng-minlength="3" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.address.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.email.$touched && customerModalCtrl.myForm.email.$invalid }">
+						<label class="col-md-2 control-lable" for="email">Email</label>
+						<div class="col-md-7">
+							<input type="email" ng-model="customerModalCtrl.data.email"
+								id="email" name="email" class="email form-control input-sm"
+								placeholder="Enter Email" required />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.email.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.homePhone.$touched && customerModalCtrl.myForm.homePhone.$invalid }">
+						<label class="col-md-2 control-lable" for="homePhone">Phone
+							number</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.homePhone"
+								id="homePhone" name="homePhone"
+								class="text form-control input-sm"
+								placeholder="Enter Home Phone Number" required
+								ng-pattern="/^[0-9\s]*$/" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.homePhone.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error': customerModalCtrl.myForm.mobilePhone.$touched && customerModalCtrl.myForm.mobilePhone.$invalid }">
+						<label class="col-md-2 control-lable" for="mobilePhone">Mobile
+							number</label>
+						<div class="col-md-7">
+							<input type="text" ng-model="customerModalCtrl.data.mobilePhone"
+								id="mobilePhone" name="mobilePhone"
+								class="text form-control input-sm"
+								placeholder="Enter Mobile Number" required
+								ng-pattern="/^[0-9\s]*$/" />
+							<div class="help-block"
+								ng-messages="customerModalCtrl.myForm.mobilePhone.$error">
+								<div ng-messages-include="includes/messages.html"></div>
+							</div>
+						</div>
+					</div>
+					<div class="form-actions floatRight">
+						<input type="submit"
+							value="{{!customerModalCtrl.data.id ? 'Add' : 'Update'}}"
+							class="btn btn-primary btn-sm"
+							ng-disabled="customerModalCtrl.myForm.$invalid">
+						<button type="button" ng-click="customerModalCtrl.reset()"
+							class="btn btn-warning btn-sm"
+							ng-disabled="customerModalCtrl.myForm.$pristine">Reset
+							Form</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

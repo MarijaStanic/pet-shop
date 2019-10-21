@@ -1,0 +1,126 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-show="productModalCtrl.data.id===undefined">Product
+				Registration</span> <span class="lead"
+				ng-show="productModalCtrl.data.id!=null">Product Update</span>
+		</div>
+		<div class="title unclickable-title">
+			<ul class="nav nav-tabs">
+				<li
+					ng-class="{'active-tab':productModalCtrl.tabCtrl.isCurrentStep(0)}"><a
+					href="#">One</a></li>
+				<li
+					ng-class="{'active-tab':productModalCtrl.tabCtrl.isCurrentStep(1)}"><a
+					href="#">Two</a></li>
+			</ul>
+		</div>
+		<div ng-switch="productModalCtrl.tabCtrl.getCurrentStep()"
+			class="slide-frame">
+			<div class="formcontainer">
+				<form ng-submit="productModalCtrl.submit()" name="productModalCtrl.myForm"
+					class="form-horizontal">
+					<input type="hidden" ng-model="productModalCtrl.data.id" />
+					<div ng-switch-when="one">
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.name.$touched && productModalCtrl.myForm.name.$invalid }">
+							<label class="col-md-2 control-lable" for="name">Name</label>
+							<div class="col-md-4">
+								<input type="text" ng-model="productModalCtrl.data.name"
+									id="name" name="name" class="form-control input-sm"
+									placeholder="Enter name" required ng-minlength="3" />
+								<div class="help-block" ng-messages="productModalCtrl.myForm.name.$error">
+									<div ng-messages-include="includes/messages.html"></div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.type.$touched && productModalCtrl.myForm.type.$invalid }">
+							<label class="col-md-2 control-lable" for="type">Type</label>
+							<div class="col-md-3">
+								<select class="form-control input-sm"
+									ng-model="productModalCtrl.data.type" id="type" name="type"
+									convert-to-number required>
+									<option value="0">Food</option>
+									<option value="1">Animal</option>
+									<option value="2">Other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.price.$touched && productModalCtrl.myForm.price.$invalid }">
+							<label class="col-md-2 control-lable" for="price">Price</label>
+							<div class="col-md-3">
+								<input type="text" ng-model="productModalCtrl.data.price"
+									id="price" name="price" class="form-control input-sm"
+									placeholder="Enter price"
+									ng-pattern="/^[0-9]{1,7}(\.[0-9]+)?$/" required />
+								<div class="help-block" ng-messages="productModalCtrl.myForm.price.$error">
+									<div ng-messages-include="includes/messages.html"></div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.size.$touched && productModalCtrl.myForm.size.$invalid }">
+							<label class="col-md-2 control-lable" for="size">Size</label>
+							<div class="col-md-3">
+								<select class="form-control input-sm"
+									ng-model="productModalCtrl.data.size" id="size" name="size"
+									required>
+									<option value="small">Small</option>
+									<option value="medium">Medium</option>
+									<option value="larger">Large</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.weight.$touched && productModalCtrl.myForm.weight.$invalid }">
+							<label class="col-md-2 control-lable" for="weight">Weight</label>
+							<div class="col-md-3">
+								<input type="text" ng-model="productModalCtrl.data.weight"
+									id="weight" name="weight" class="form-control input-sm"
+									placeholder="Enter weight"
+									ng-pattern="/^[0-9]{1,7}(\.[0-9]+)?$/" required />
+								<div class="help-block" ng-messages="productModalCtrl.myForm.weight.$error">
+									<div ng-messages-include="includes/messages.html"></div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error': productModalCtrl.myForm.note.$touched && productModalCtrl.myForm.note.$invalid }">
+							<label class="col-md-2 control-lable" for="note">Note</label>
+							<div class="col-md-7">
+								<textarea class="form-control" rows="5" id="comment"
+									ng-model="productModalCtrl.data.note"></textarea>
+							</div>
+						</div>
+
+					</div>
+					<div ng-switch-when="two"
+						ng-controller="SuppliersCtrl as suppliersCtrl">
+						<p>
+							<b><em>Select a supplier by clicking on row in the
+									table.</em></b>
+						</p>
+						<p>
+							<b>Selected Supplier </b><span
+								ng-bind="productModalCtrl.data.supplier.firstName"></span>
+						</p>
+						<div ng-include="'/seminarski-rad-d/suppliers/suppliers.html'"></div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a class="btn btn-default"
+		ng-click="productModalCtrl.tabCtrl.handlePrevious()"
+		ng-show="!productModalCtrl.tabCtrl.isFirstStep()">Back</a>
+	<button class="btn btn-primary"
+		ng-click="productModalCtrl.handleNext()"
+		ng-disabled="productModalCtrl.isNextAvailable()">{{productModalCtrl.tabCtrl.getNextLabel()}}</button>
+	<button type="button" ng-click="productModalCtrl.reset()"
+		class="btn btn-warning btn-sm" ng-disabled="productModalCtrl.myForm.$pristine">Reset
+		Form</button>
+</div>

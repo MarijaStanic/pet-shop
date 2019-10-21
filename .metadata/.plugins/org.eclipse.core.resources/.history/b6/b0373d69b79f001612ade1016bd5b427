@@ -1,0 +1,78 @@
+var app = angular.module('myApp');
+
+app.controller('ModalCtrl', ['UserService', function($scope, data){
+	
+	var vm = this;
+	vm.data=data;
+	
+	UserService.getRoles().then(function(response){
+		self.roles = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+    
+    UserService.getSalesUnits().then(function(response){
+		self.salesUnits = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+    
+    function submit() {
+        if(self.user.id===null){
+            console.log('Saving New User', self.user);
+            createUser(self.user);
+        }else{
+            updateUser(self.user, self.user.id);
+            console.log('User updated with id ', self.user.id);
+        }
+        reset();
+    }
+    
+    function createUser(user){
+        UserService.createUser(user)
+            .then(
+            getAllUsers,
+            function(errResponse){
+                console.error('Error while creating User');
+            }
+        );
+    }
+ 
+    function updateUser(user, id){
+    	console.log(self.user);
+        UserService.updateUser(user, id)
+            .then(
+            getAllUsers,
+            function(errResponse){
+                console.error('Error while updating User');
+            }
+        );
+    }
+ 
+    function deleteUser(id){
+        UserService.deleteUser(id)
+            .then(
+            getAllUsers,
+            function(errResponse){
+                console.error('Error while deleting User');
+            }
+        );
+    }
+ 
+    function remove(id){
+        console.log('id to be deleted', id);
+        if(self.user.id === id) {//clean form if the user to be deleted is shown there.
+            reset();
+        }
+        deleteUser(id);
+    }
+ 
+ 
+    function reset(){
+        self.user={id:null,username:'',address:'',email:''};
+        $scope.myForm.$setPristine();
+    }
+	
+}]);

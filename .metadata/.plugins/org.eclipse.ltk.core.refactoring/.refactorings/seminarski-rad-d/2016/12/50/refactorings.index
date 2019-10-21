@@ -1,0 +1,12 @@
+1480886051025	Move 'suppliers' to 'webapp'
+1480886535104	Move 'stocks' to 'webapp'
+1480886561607	Move 'sales-units' to 'webapp'
+1480886582442	Move 'customers' to 'webapp'
+1480886590786	Move 'users' to 'webapp'
+1480886607058	Move 'user-modal.html' to 'modals'
+1480886610754	Delete element
+1480886616145	Move 'users.html' to 'views'
+1480886666417	Move 'users.html' to 'users'
+1480886908804	Delete element
+1480886959436	Move 'products' to 'webapp'
+1480886970501	Move 'orders' to 'webapp'

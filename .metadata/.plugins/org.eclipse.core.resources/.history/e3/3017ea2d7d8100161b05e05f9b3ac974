@@ -1,0 +1,28 @@
+var app = angular.module('myApp');
+
+app.factory('sessionService', function sessionService($http, $log) {
+	var loggedUser;
+	var authenticated;
+
+	var getLoggedUser = function() {
+		return $http.get('/seminarski-rad-d/user').then(function(response) {
+			loggedUser = response.data;
+			$log.info(response);
+		});
+	}
+
+	sessionService.login = function(config) {
+		return $http.post('login', '', config).then(function(response) {
+			authenticated = true;
+			return getLoggedUser();
+		}).then(function(response){
+			$log.info(response);
+		});
+	}
+
+	sessionService.getUser = function() {
+		return loggedUser;
+	};
+
+	return sessionService;
+});

@@ -1,0 +1,43 @@
+<div class="generic-container">
+	<div class="well">
+		<a modal-view-url="stocks/modals/stock-modal.html"
+			modal-controller='StockModalCtrl as stockModalCtrl' object="{}" size="xl" href="">Add
+			New Stock</a>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">List of Stocks</span>
+		</div>
+		<div class="tablecontainer">
+			<table datatable="ng" class="table table-hover">
+				<thead>
+					<tr>
+						<th>Product name</th>
+						<th>Price</th>
+						<th>Type</th>
+						<th>Quantity</th>
+						<th>Sales Unit</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="s in stocksCtrl.data.stocks">
+						<td><span ng-bind="s.product.name"></span></td>
+						<td><span ng-bind="s.product.price"></span></td>
+						<td><span ng-bind="s.product.type"></span></td>
+						<td><span ng-bind="s.quantity"></span></td>
+						<td><span ng-bind="s.salesUnit.name"></span></td>
+						<td>
+							<button type="submit"
+								modal-view-url="stocks/modals/stock-modal.html"
+								modal-controller='StockModalCtrl as stockModalCtrl' object="s"
+								size="xl" class="btn btn-success custom-width">Edit</button>
+							<button type="submit" ng-click="stocksCtrl.deleteStock(s.id, $index)"
+								class="btn btn-danger custom-width">Remove</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

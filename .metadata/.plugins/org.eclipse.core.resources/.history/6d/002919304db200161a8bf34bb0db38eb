@@ -1,0 +1,269 @@
+var app = angular.module('myApp');
+
+app.controller('IndexCtrl', [ '$location', 'sessionService', '$rootScope',
+		function($location, sessionService, $rootScope) {
+
+			var self = this;
+
+			if (!$rootScope.logged) {
+				$location.path('/login');
+			} else {
+				$location.path('/home');
+			}
+
+			self.isActive = function(viewLocation) {
+				var active = (viewLocation === $location.path());
+				return active;
+			};
+
+			self.isAuthorised = function(allowedRoles) {
+				var roles = allowedRoles.split(',');
+				for (var i = 0; i < roles.length; i++) {
+					allowed = sessionService.isAuthorised(roles[i]);
+					if (allowed) {
+						return true;
+					}
+				}
+				return false;
+			}
+		} ]);
+
+app.controller('LoginCtrl', [ '$rootScope', '$scope', '$http', '$location',
+		'sessionService',
+		function($rootScope, $scope, $http, $location, sessionService) {
+
+			var vm = this;
+			$rootScope.error = false;
+
+			vm.login = function() {
+				var config = {
+					params : {
+						username : vm.username,
+						password : vm.password
+					}
+				}
+				sessionService.login(config).then(function(response) {
+					$rootScope.logged = true;
+					// vm.loggedUser = sessionService.getUser();
+					// console.log(vm.loggedUser);
+					$location.path('/home');
+				}, function(response) {
+					$rootScope.logged = false;
+					$rootScope.error = true;
+				});
+			}
+		} ]);
+
+app.controller('HomeCtrl', [
+		'UserService',
+		'$rootScope',
+		'sessionService',
+		function(UserService, $rootScope, sessionService) {
+
+			var self = this;
+			self.error = false;
+			self.showMessage = false;
+
+			self.loggedUser = sessionService.getUser();
+			self.userToUpdate = {
+				id : self.loggedUser.id,
+				firstName : self.loggedUser.firstName,
+				lastName : self.loggedUser.lastName,
+				address : self.loggedUser.address,
+				email : self.loggedUser.email,
+				username : self.loggedUser.username,
+				password : self.loggedUser.password,
+				roles : self.loggedUser.roles,
+				salesUnit : self.loggedUser.salesUnit
+			};
+
+			self.updateUser = updateUser;
+			self.user = angular.copy(self.userToUpdate);
+			self.user.email = null;
+			self.user.password = null;
+
+			function updateUser(toUpdate) {
+				if (toUpdate == 'email') {
+					if (self.user.email == null) {
+						self.error = true;
+						self.showMessage = true;
+						return;
+					}
+					self.userToUpdate.email == self.user.email;
+				} else {
+					if (self.user.password == null) {
+						self.error = true;
+						self.showMessage = true;
+						return;
+					}
+					self.userToUpdate.password = self.user.password;
+				}
+
+				UserService.updateUser(self.userToUpdate, self.userToUpdate.id)
+						.then(function(response) {
+							if (toUpdate == 'email') {
+								self.loggedUser.email = self.user.email;
+								self.user.email = null;
+							} else {
+								self.loggedUser.password = self.user.password;
+								self.user.password = null;
+
+							}
+							;
+							self.error = false;
+							self.showMessage = true;
+						}, function(errResponse) {
+							self.error = true;
+							self.showMessage = true;
+							console.error('Error while updating User');
+						});
+			}
+		} ]);
+
+app.controller('UsersCtrl', [ 'UserService', function(UserService) {
+
+	var self = this;
+	self.data = UserService.data;
+
+	self.deleteUser = function(id) {
+		UserService.deleteUser(id);
+	}
+
+} ]);
+
+app.controller('SalesUnitsCtrl', [ 'SalesUnitService', '$location',
+		'ProductService',
+		function(SalesUnitService, $location, ProductService) {
+
+			var self = this;
+			self.data = SalesUnitService.data;
+			// self.salesUnit = {};
+
+			self.deleteSalesUnit = function(id) {
+				SalesUnitService.deleteSalesUnit(id);
+			}
+
+			self.view = function(path) {
+				console.log('path', path);
+				$location.path(path);
+			}
+
+			self.setSalesUnit = function(salesUnit) {
+				// console.log('sales unit', salesUnit);
+				// self.salesUnit = salesUnit;
+				ProductService.salesUnit = salesUnit;
+				// console.log('ispis', ProductService.salesUnit);
+			}
+		} ]);
+
+app.controller('CustomersCtrl', [ 'CustomerService', 'OrderService',
+		function(CustomerService, OrderService) {
+
+			var self = this;
+			self.data = CustomerService.data;
+
+			self.deleteCustomer = function(id) {
+				CustomerService.deleteCustomer(id);
+			}
+
+			self.setSelectedCustomer = function(customer) {
+				OrderService.customer = customer;
+				console.log('in orderservice', OrderService.customer);
+			}
+		} ]);
+
+app.controller('StocksCtrl', [ 'StockService', '$routeParams', '$location',
+		function(StockService, $routeParams, $location) {
+
+			var self = this;
+			self.data = StockService.data;
+
+			if ($location.path() === '/stocks') {
+				StockService.data.salesUnitId = null;
+				StockService.getStocks();
+			} else {
+				StockService.data.salesUnitId = $routeParams.id;
+				StockService.getStocksForSalesUnit($routeParams.id);
+			}
+
+			self.deleteStock = function(id, index) {
+				StockService.deleteStock(id, index);
+			}
+
+		} ]);
+
+app.controller('ProductsCtrl', [ 'ProductService', 'StockService',
+		function(ProductService, StockService) {
+
+			var self = this;
+			self.data = ProductService.data;
+
+			self.deleteProduct = function(id) {
+				ProductService.deleteProduct(id);
+			}
+
+			self.setSelectedProduct = function(product) {
+				StockService.product = product;
+				console.log('in stockservice', StockService.product);
+			}
+		} ]);
+
+app.controller('SuppliersCtrl', [ 'SupplierService', 'ProductService',
+		function(SupplierService, ProductService) {
+
+			var self = this;
+			self.data = SupplierService.data;
+
+			SupplierService.getSuppliers();
+
+			self.deleteSupplier = function(id) {
+				SupplierService.deleteSupplier(id);
+			}
+
+			self.setSelectedSupplier = function(supplier) {
+				ProductService.supplier = supplier;
+				console.log('ispis', ProductService.supplier);
+			}
+		} ]);
+
+app.controller('TabCtrl', function() {
+
+	var self = this;
+	self.steps = [ 'one', 'two' ];
+	self.step = 0;
+
+	self.isCurrentStep = function(step) {
+		return self.step === step;
+	}
+
+	self.setCurrentStep = function(step) {
+		self.step = step;
+	}
+
+	self.getCurrentStep = function() {
+		return self.steps[self.step];
+	}
+
+	self.isFirstStep = function() {
+		return self.step === 0;
+	}
+
+	self.isLastStep = function() {
+		return self.step === (self.steps.length - 1);
+	}
+
+	self.getNextLabel = function() {
+		return (self.isLastStep()) ? 'Submit' : 'Next';
+	}
+
+	self.handlePrevious = function() {
+		self.step -= (self.isFirstStep()) ? 0 : 1;
+	}
+});
+
+app.controller('OrdersCtrl', [ 'OrderService', function(OrderService) {
+
+	var self = this;
+	self.data = OrderService.data;
+
+} ]);

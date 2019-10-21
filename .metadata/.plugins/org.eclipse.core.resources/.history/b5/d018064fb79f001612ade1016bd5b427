@@ -1,0 +1,22 @@
+var app = angular.module('myApp');
+
+app.controller('ModalCtrl', ['UserService', function($scope, data){
+	
+	var vm = this;
+	vm.data=data;
+	
+	UserService.getRoles().then(function(response){
+		self.roles = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+    
+    UserService.getSalesUnits().then(function(response){
+		self.salesUnits = response.data;
+		console.log(self.roles);
+	}, function(error){
+		alert(error.data);
+	});
+	
+}]);

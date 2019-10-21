@@ -1,0 +1,123 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-show="orderModalCtrl.data.id===undefined">Create
+				order</span>
+			<!--  <span class="lead" ng-show="productModalCtrl.data.id!=null">Product
+				Update</span> -->
+		</div>
+		<div class="title unclickable-title">
+			<ul class="nav nav-tabs">
+				<li
+					ng-class="{'active-tab':orderModalCtrl.tabCtrl.isCurrentStep(0)}"><a
+					href="#">One</a></li>
+				<li
+					ng-class="{'active-tab':orderModalCtrl.tabCtrl.isCurrentStep(1)}"><a
+					href="#">Two</a></li>
+			</ul>
+		</div>
+		<div ng-switch="orderModalCtrl.tabCtrl.getCurrentStep()"
+			class="slide-frame">
+			<div class="col-md-6">
+				<div ng-switch-when="one">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<span class="lead">List of Stocks</span>
+						</div>
+						<div class="tablecontainer">
+							<table datatable="ng" class="table table-hover">
+								<thead>
+									<tr>
+										<th>Product name</th>
+										<th>Price</th>
+										<th>Type</th>
+										<th>Quantity</th>
+										<th>Sales Unit</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="s in orderModalCtrl.stocks">
+										<td><span ng-bind="s.product.name"></span></td>
+										<td><span ng-bind="s.product.price"></span></td>
+										<td><span ng-bind="s.product.type"></span></td>
+										<td><span ng-bind="s.quantity"></span></td>
+										<td><span ng-bind="s.salesUnit.name"></span></td>
+										<td>
+											<button ng-click="orderModalCtrl.addToOrder(s)"
+												class="btn btn-success custom-width"
+												ng-disabled="s.disabled">Add to Order</button></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<span class="lead">List of Order Products</span>
+					</div>
+					<div class="tablecontainer">
+						<table datatable="ng" class="table table-hover">
+							<thead>
+								<tr>
+									<th>Product name</th>
+									<th>Price</th>
+									<th>Type</th>
+									<th>Quantity</th>
+									<th>Sales Unit</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="s in orderModalCtrl.orderProducts">
+									<td><span ng-bind="s.product.name"></span></td>
+									<td><span ng-bind="s.product.price"></span></td>
+									<td><span ng-bind="s.product.type"></span></td>
+									<td><span ng-bind="s.quantity"></span></td>
+									<td><span ng-bind="s.salesUnit.name"></span></td>
+									<td>
+										<form name="orderModalCtrl.myForm">
+											<div class="form-group"
+												ng-class="{ 'has-error': orderModalCtrl.myForm['quantity_' + $index].quantity.$touched && orderModalCtrl.myForm['quantity_' + $index].quantity.$invalid }">
+												<input type="text" ng-model="orderModalCtrl.map[s.id]"
+													name="quantity_{{$index}}" class="form-control custom-width" required>
+											</div>
+											<div class="help-block" ng-messages="orderModalCtrl.myForm['quantity_' + $index].$error">
+												<div ng-message="required"><span ng-bind="orderModalCtrl.errorMessage"></span></div>
+											</div>
+										</form>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div ng-switch-when="two"
+				ng-controller="SuppliersCtrl as suppliersCtrl">
+				<p>
+					<b><em>Select a supplier by clicking on row in the table.</em></b>
+				</p>
+				<p>
+					<b>Selected Supplier </b><span
+						ng-bind="productModalCtrl.data.supplier.firstName"></span>
+				</p>
+				<div ng-include="'/seminarski-rad-d/suppliers/suppliers.html'"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<a class="btn btn-default"
+		ng-click="productModalCtrl.tabCtrl.handlePrevious()"
+		ng-show="!productModalCtrl.tabCtrl.isFirstStep()">Back</a>
+	<button class="btn btn-primary"
+		ng-click="productModalCtrl.handleNext()"
+		ng-disabled="productModalCtrl.isNextAvailable()">{{productModalCtrl.tabCtrl.getNextLabel()}}</button>
+	<button type="button" ng-click="orderModalCtrl.reset()"
+		class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset
+		Form</button>
+</div>

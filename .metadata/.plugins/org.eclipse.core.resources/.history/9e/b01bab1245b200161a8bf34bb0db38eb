@@ -1,0 +1,45 @@
+<div class="generic-container">
+	<div class="well" ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')>
+		<a modal-view-url="orders/modals/order-create.html"
+			modal-controller='OrderModalCtrl as orderCtrl' object="{}" href="">Create
+			New Order</a>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">List of Orders</span>
+		</div>
+		<div class="tablecontainer">
+			<table datatable="ng" class="table table-hover">
+				<thead>
+					<tr>
+						<th>Order Created</th>
+						<th>Quantity</th>
+						<th>Total Price</th>
+						<th>Customer</th>
+						<th>Order Delivered</th>
+						<!--  <th ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')></th>-->
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="o in ordersCtrl.orders">
+						<td><span ng-bind="o.orderCreated"></span></td>
+						<td><span ng-bind="o.quantity"></span></td>
+						<td><span ng-bind="o.totalPrice"></span></td>
+						<td><span ng-bind="o.customer.firstName"></span></td>
+						<td><span ng-bind="o.orderDeliverd"></span></td>
+						<!-- 	<td ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')>
+							<button type="submit"
+								ng-click="salesUnitsCtrl.view('/sales-units/'+su.id+'/stock')"
+								class="btn btn-success custom-width">Stock</button>
+							<button type="submit"
+								ng-click="salesUnitsCtrl.popup('user', su, $index)"
+								class="btn btn-success custom-width">Edit</button>
+							<button type="submit" ng-click="salesUnitsCtrl.remove(su.id)"
+								class="btn btn-danger custom-width">Remove</button>
+						</td> -->
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

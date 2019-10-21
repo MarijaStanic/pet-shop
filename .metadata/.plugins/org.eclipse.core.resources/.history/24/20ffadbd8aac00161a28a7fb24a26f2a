@@ -1,0 +1,559 @@
+var app = angular.module('myApp');
+
+app.controller('UserModalCtrl', function(data, $uibModalInstance, UserService,
+		SalesUnitService) {
+
+	var self = this;
+
+	self.data = data;
+
+	self.roles = [];
+	self.salesUnits = [];
+
+	self.submit = submit;
+	self.reset = reset;
+
+	UserService.getRoles().then(function(response) {
+		self.roles = response.data;
+	}, function(error) {
+		alert(error.data);
+	});
+
+	SalesUnitService.getSalesUnits().then(function(response) {
+		self.salesUnits = response.data;
+		console.log('Sales units', self.salesUnits);
+	}, function(error) {
+		alert(error.data);
+	});
+
+	function submit() {
+		console.log(self.data.id);
+		if (self.data.id === undefined) {
+			console.log('Saving New User', self.data);
+			createUser(self.data);
+		} else {
+			updateUser(self.data, self.data.id);
+			console.log('User updated with id ', self.data.id);
+		}
+	}
+
+	function createUser(user) {
+		UserService.createUser(user).then(function(response) {
+			closeModal(user)
+		}, function(errResponse) {
+			var status = errResponse.status;
+			if (status == 409) {
+				alert(errResponse.data);
+			}
+			console.error('Error while creating User');
+		});
+	}
+
+	function updateUser(user, id) {
+		console.log(self.data);
+		UserService.updateUser(user, id).then(closeModal(user),
+				function(errResponse) {
+					console.error('Error while updating User');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			firstName : '',
+			lastName : '',
+			address : '',
+			username : '',
+			password : '',
+			email : ''
+		};
+		self.myForm.$setPristine();
+		self.myForm.$setUntouched();
+	}
+
+	function closeModal(user) {
+		$uibModalInstance.close(user);
+	}
+
+});
+
+app.controller('SalesUnitModalCtrl', function(data, $uibModalInstance,
+		SalesUnitService, $scope) {
+
+	var self = this;
+
+	self.data = data;
+
+	self.submit = submit;
+	self.reset = reset;
+
+	function submit() {
+		console.log(self.data.id);
+		if (self.data.id === null || self.data.id === undefined) {
+			console.log('Saving New Sales Unit', self.data);
+			createSalesUnit(self.data);
+		} else {
+			updateSalesUnit(self.data, self.data.id);
+			console.log('Sales Unit updated with id ', self.data.id);
+		}
+		reset();
+	}
+
+	function createSalesUnit(salesUnit) {
+		SalesUnitService.createSalesUnit(salesUnit).then(closeModal(salesUnit),
+				function(errResponse) {
+					console.error('Error while creating Sales Unit');
+				});
+	}
+
+	function updateSalesUnit(salesUnit, id) {
+		SalesUnitService.updateSalesUnit(salesUnit, id).then(
+				closeModal(salesUnit), function(errResponse) {
+					console.error('Error while updating Sales Unit');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			name : '',
+			address : '',
+			email : '',
+			phone : '',
+			status : '',
+		};
+		$scope.myForm.$setPristine();
+		$scope.myForm.$setUntouched();
+	}
+
+	function closeModal(salesUnit) {
+		$uibModalInstance.close(salesUnit);
+	}
+
+});
+
+app.controller('CustomerModalCtrl', function(data, $uibModalInstance,
+		CustomerService, $scope) {
+
+	var self = this;
+
+	self.data = data;
+
+	self.submit = submit;
+	self.reset = reset;
+
+	function submit() {
+		console.log(self.data.id);
+		if (self.data.id === null || self.data.id === undefined) {
+			console.log('Saving New Customer', self.data);
+			createCustomer(self.data);
+		} else {
+			updateCustomer(self.data, self.data.id);
+			console.log('Customer updated with id ', self.data.id);
+		}
+		reset();
+	}
+
+	function createCustomer(customer) {
+		CustomerService.createCustomer(customer).then(closeModal(customer),
+				function(errResponse) {
+					console.error('Error while creating Customer');
+				});
+	}
+
+	function updateCustomer(customer, id) {
+		CustomerService.updateCustomer(customer, id).then(closeModal(customer),
+				function(errResponse) {
+					console.error('Error while updating Customer');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			firstName : '',
+			lastName : '',
+			birthdate : '',
+			address : '',
+			email : '',
+			homePhone : '',
+			mobilePhone : ''
+		};
+		$scope.myForm.$setPristine();
+		$scope.myForm.$setUntouched();
+	}
+
+	function closeModal(customer) {
+		$uibModalInstance.close(customer);
+	}
+});
+
+app.controller('ProductModalCtrl', function(data, $uibModalInstance,
+		ProductService, $controller, $scope) {
+
+	var self = this;
+
+	self.data = data;
+	if (self.data != undefined) {
+		ProductService.supplier = self.data.supplier;
+	} else {
+		self.data = {};
+	}
+
+	self.submit = submit;
+	self.reset = reset;
+	self.tabCtrl = $controller('TabCtrl', {});
+	//self.tabCtrl.steps = [ 'one', 'two' ];
+
+	$scope.ProductService = ProductService;
+	$scope.$watch('ProductService.supplier', function(newVal) {
+		console.log('data changes into: ', newVal)
+		self.data.supplier = newVal;
+	});
+
+	self.handleNext = function() {
+		if (self.tabCtrl.isLastStep()) {
+			submit();
+		} else {
+			self.tabCtrl.step += 1;
+		}
+	};
+
+	function submit() {
+		console.log('gotovo', self.data.supplier);
+		if (self.data.id === null || self.data.id === undefined) {
+			console.log('Saving New Product', self.data);
+			createProduct(self.data);
+		} else {
+			updateProduct(self.data, self.data.id);
+			console.log('Product updated with id ', self.data.id);
+		}
+		reset();
+	}
+
+	function createProduct(product) {
+		ProductService.createProduct(product).then(closeModal(product),
+				function(errResponse) {
+					console.error('Error while creating Product');
+				});
+	}
+
+	function updateProduct(product, id) {
+		ProductService.updateProduct(product, id).then(closeModal(product),
+				function(errResponse) {
+					console.error('Error while updating Product');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			name : '',
+			type : '',
+			price : '',
+			size : '',
+			weight : '',
+			note : ''
+		};
+		self.tabCtrl.setCurrentStep(0);
+		ProductService.supplier = null;
+		$scope.myForm.$setPristine();
+		$scope.myForm.$setUntouched();
+	}
+
+	function closeModal(product) {
+		ProductService.supplier = null;
+		$uibModalInstance.close(product);
+	}
+
+	self.isNextAvailable = function() {
+		if ($scope.myForm.$invalid) {
+			console.error('Invalid');
+			return true;
+		} else if (self.tabCtrl.isCurrentStep(1)
+				&& ProductService.supplier === null) {
+			console.error('Supplier null');
+			return true;
+		} else {
+			console.error('Valid');
+			return false;
+		}
+	}
+});
+
+app.controller('SupplierModalCtrl', function(data, $uibModalInstance,
+		SupplierService, $scope) {
+
+	var self = this;
+
+	self.data = data;
+
+	self.submit = submit;
+	self.reset = reset;
+
+	function submit() {
+		console.log(self.data.id);
+		if (self.data.id === null || self.data.id === undefined) {
+			console.log('Saving New Supplier', self.data);
+			createSupplier(self.data);
+		} else {
+			updateSupplier(self.data, self.data.id);
+			console.log('Supplier updated with id ', self.data.id);
+		}
+		reset();
+	}
+
+	function createSupplier(supplier) {
+		SupplierService.createSupplier(supplier).then(closeModal(supplier),
+				function(errResponse) {
+					console.error('Error while creating Supplier');
+				});
+	}
+
+	function updateSupplier(supplier, id) {
+		SupplierService.updateSupplier(supplier, id).then(closeModal(supplier),
+				function(errResponse) {
+					console.error('Error while updating Supplier');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			firstName : '',
+			lastName : '',
+			address : '',
+			email : '',
+			homePhone : '',
+			mobilePhone : ''
+		};
+		$scope.myForm.$setPristine();
+		$scope.myForm.$setUntouched();
+	}
+
+	function closeModal(supplier) {
+		$uibModalInstance.close(supplier);
+	}
+});
+
+app.controller('StockModalCtrl', function(data, $uibModalInstance,
+		StockService, $controller, $scope) {
+
+	var self = this;
+
+	self.data = data;
+	if (self.data != undefined) {
+		// StockService.salesUnit = self.data.salesUnit;
+		StockService.product = self.data.product;
+	}
+
+	self.submit = submit;
+	self.reset = reset;
+	// self.tabCtrl = $controller('TabCtrl', {});
+	// self.tabCtrl.steps = [ 'one', 'two', 'three' ];
+
+	$scope.StockService = StockService;
+	/*
+	 * $scope.$watchGroup('StockService.salesUnit', 'StockService.product',
+	 * function(newValues) { console.log('data changes into: ', newVal)
+	 * self.data.salesUnit = newValues[0]; self.data.product = newValues[1]; });
+	 */
+	$scope.$watch('StockService.product', function(newVal) {
+		console.log('data changes into: ', newVal)
+		self.data.product = newVal;
+	});
+
+	/*
+	 * self.handleNext = function() { if (self.tabCtrl.isLastStep()) { submit(); }
+	 * else { self.tabCtrl.step += 1; } };
+	 */
+
+	function submit() {
+		console.log('gotovo', self.data);
+		if (self.data.id === null || self.data.id === undefined) {
+			console.log('Saving New Stock', self.data);
+			createStock(self.data);
+		} else {
+			updateStock(self.data, self.data.id);
+			console.log('Stock updated with id ', self.data.id);
+		}
+		reset();
+	}
+
+	function createStock(stock) {
+		StockService.createStockForSalesUnit(stock).then(closeModal(stock),
+				function(errResponse) {
+					console.error('Error while creating Stock');
+				});
+	}
+
+	function updateStock(stock, id) {
+		StockService.updateStock(stock, id).then(closeModal(stock),
+				function(errResponse) {
+					console.error('Error while updating Stock');
+				});
+	}
+
+	function reset() {
+		console.log('reset');
+		self.data = {
+			quantity : '',
+			product : {
+				name : '',
+				price : '',
+				type : ''
+			}
+		};
+		// self.tabCtrl.setCurrentStep(0);
+		// StockService.salesUnit = null;
+		StockService.product = null;
+		$scope.myForm.$setPristine();
+		$scope.myForm.$setUntouched();
+	}
+
+	function closeModal(stock) {
+		// StockService.salesUnit = null;
+		StockService.product = null;
+		$uibModalInstance.close(stock);
+	}
+
+	self.isNextAvailable = function() {
+		if ($scope.myForm.$invalid) {
+			console.error('Invalid');
+			return true;
+		} else if (StockService.product === null) {
+			console.error('Product null');
+			return true;
+		} else {
+			console.error('Valid');
+			return false;
+		}
+	}
+});
+
+app
+		.controller(
+				'OrderModalCtrl',
+				function(data, $uibModalInstance, OrderService, StockService,
+						$controller, $scope) {
+
+					var self = this;
+
+					self.data = data;
+					if (self.data == undefined) {
+						self.data = {};
+					}
+
+					self.orderProducts = [];
+					self.map = {};
+					self.numOfItems = 0;
+					self.totalPrice = 0.0;
+
+					function get(k) {
+						return self.map[k];
+					}
+
+					self.stocks = [];
+
+					self.submit = submit;
+					self.reset = reset;
+					self.addToOrder = addToOrder;
+
+					self.tabCtrl = $controller('TabCtrl', {});
+					//self.tabCtrl.steps = [ 'one', 'two' ];
+
+					getAllStocks();
+
+					function getAllStocks() {
+						StockService.getStocks().then(function(response) {
+							self.stocks = response.data;
+						}, function(error) {
+							alert(error.data);
+						});
+					}
+
+					$scope.OrderService = OrderService;
+					$scope.$watch('OrderService.customer', function(newVal) {
+						console.log('data changes into: ', newVal)
+						self.data.customer = newVal;
+					});
+
+					self.handleNext = function() {
+						if (self.tabCtrl.isLastStep()) {
+							submit();
+						} else {
+							self.tabCtrl.step += 1;
+						}
+					};
+
+					function submit() {
+						self.data.orderCreated = new Date();
+						self.data.orderDelivered = null;
+						self.data.quantity = self.numOfItems;
+						self.data.totalPrice = self.totalPrice;
+						console.log('Saving New Order', self.data.customer);
+						createOrder(self.data, self.map);
+						reset();
+					}
+
+					function createOrder(order, orderProducts) {
+						OrderService
+								.createOrder(order, orderProducts)
+								.then(
+										closeModal(order),
+										function(errResponse) {
+											console
+													.error('Error while creating Order');
+										});
+					}
+
+					function reset() {
+						console.log('reset');
+						self.map = {};
+						getAllStocks();
+						self.orderProducts = [];
+						console.log(self.map);
+						self.tabCtrl.setCurrentStep(0);
+						OrderService.customer = null;
+					}
+
+					function closeModal(order) {
+						OrderService.customer = null;
+						$uibModalInstance.close(order);
+					}
+
+					self.isNextAvailable = function() {
+						if (self.orderProducts.length == 0) {
+							console.error('Invalid');
+							return true;
+						} else if ((self.tabCtrl.isCurrentStep(1) && OrderService.customer === null)) {
+							console.error('Customer null');
+							return true;
+						} else {
+							console.error('Valid');
+							return false;
+						}
+					}
+
+					self.quantity = {};
+					function addToOrder(stock, index) {
+						console.log(self.quantity[index]);
+						if ((self.quantity[index] > self.stocks[index].quantity)
+								|| (self.quantity[index] <= 0)
+								|| (self.quantity[index] == undefined)) {
+							self.errorMessage = "Must be greater than 0 and smaller than "
+									+ self.stocks[index].quantity;
+							self.myForm['quantity_' + index].$error.validation = true;
+						} else {
+							self.myForm['quantity_' + index].$error.validation = false;
+							stock.quantity -= self.quantity[index];
+							self.numOfItems += self.quantity[index];
+							self.totalPrice += stock.product.price;
+							self.orderProducts.push(stock);
+							self.map[stock.id] = self.quantity[index];
+							stock.disabled = true;
+							console.log(self.map);
+						}
+
+					}
+				});

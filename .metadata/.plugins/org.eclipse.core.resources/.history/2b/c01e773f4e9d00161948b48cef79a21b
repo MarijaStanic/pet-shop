@@ -1,0 +1,68 @@
+var app = angular.module('myApp');
+
+app.factory('sessionService', function sessionService($http, $log, $rootScope) {
+	
+	var loggedUser;
+
+	var getLoggedUser = function() {
+		return $http.get('/seminarski-rad-d/user-login').then(function(response) {
+			loggedUser = response.data;
+			$log.info(response);
+		});
+	}
+
+	sessionService.login = function(config) {
+		return $http.post('login', '', config).then(function(response) {
+			authenticated = true;
+			return getLoggedUser();
+		}).then(function(response){
+			$log.info(response);
+		});
+	}
+	
+	sessionService.isAuthorised = function(role) {
+		if (loggedUser == null) {
+			return false;
+		}
+		for (var i = 0; i < loggedUser.authorities.length; i++) {
+			if (loggedUser.authorities[i].authority == role) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	sessionService.getUser = function() {
+		return loggedUser;
+	};
+	
+	sessionService.broadcastLoggedUser = function(){
+		$rootScope
+	};
+
+	return sessionService;
+});
+
+app.factory('UserService', function userService($http, $log) {
+	
+/*	userService.update = function(user, id) {
+		return $http.put('../seminarski-rad-d/user/'+id,user);
+	}*/
+	
+	/*userService.getAllUsers = function() {
+        return $http.get('/seminarski-rad-d/allusers').then(function(response) {
+			$log.info(response);
+			return response.data;
+		});
+    }*/
+	
+	userService.getAllUsers = function() {
+        return $http.get('/seminarski-rad-d/user');
+    }
+	
+	userService.updateUser = function(user, id) {
+        return $http.put('/seminarski-rad-d/user' + id, user);
+    }
+	
+	return userService;
+});

@@ -1,0 +1,132 @@
+body {
+	height: 100%;
+	background-color: rgb(252, 251, 227);
+	font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+/************** Login **************/
+.login-container {
+	margin-top: 100px;
+	background-color: beige;
+	width: 40%;
+	left: 30%;
+	position: absolute;
+}
+
+.login-card {
+	width: 80%;
+	margin: auto;
+}
+
+.login-form {
+	padding: 10%;
+}
+
+/* Navbar */
+.navbar>.container .navbar-brand {
+	margin-left: 0;
+}
+
+.navbar-brand {
+	padding: 0;
+}
+
+.navbar {
+	border-radius: 0;
+	background: #151515;
+	padding: 15px 0;
+	padding-bottom: 0;
+}
+
+.navbar-nav {
+	margin-top: 12px;
+}
+
+.navbar-nav>li {
+	margin-left: 35px;
+	padding-bottom: 28px;
+}
+
+.navbar-inverse .navbar-nav>li>a {
+	padding: 5px 12px;
+	margin: 0;
+	border-radius: 3px;
+	color: #fff;
+	line-height: 24px;
+	display: inline-block;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover {
+	background-color: #f1d98d;
+	color: #fff;
+}
+
+.navbar-inverse {
+	border: none;
+}
+
+.navbar-inverse .navbar-brand {
+	font-size: 36px;
+	line-height: 50px;
+	color: #fff;
+}
+
+.navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:hover,
+	.navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.open>a,
+	.navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus
+	{
+	background-color: #f1d98d;
+	color: #fff;
+}
+
+/************** Panels **************/
+.panel-heading {
+	font-weight: 900;
+}
+
+/*.panel-container{
+	max-width: 80%;
+	position: relative;
+	left: 20%;
+}*/
+
+/************** Forms **************/
+input, button {
+	margin: 0 6px;
+}
+
+.form-group .help-block {
+	display: none;
+}
+
+.form-group.has-error .help-block {
+	display: inline;
+}
+
+.floatRight {
+	float: right;
+	margin-right: 18px;
+}
+
+.formcontainer {
+	background-color: #DAE8E8;
+	padding: 20px 20px 65px;
+}
+
+.tablecontainer {
+	padding-left: 20px;
+}
+
+.generic-container {
+	width: 90%;
+	margin: 0 auto;
+	padding: 20px;
+	background-color: #EAE7E7;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-shadow: 0 0 30px black;
+}
+
+.custom-width {
+	width: 80px !important;
+}

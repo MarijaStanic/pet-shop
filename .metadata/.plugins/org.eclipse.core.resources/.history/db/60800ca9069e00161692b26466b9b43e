@@ -1,0 +1,170 @@
+var app = angular.module('myApp');
+
+app.controller('IndexCtrl', ['$scope','$location','sessionService', function($scope,$location, sessionService) {	
+	
+	if (!$scope.logged) {
+		$location.path('/login');
+	} else {
+		$location.path('/home');
+	}
+	
+	$scope.isActive = function (viewLocation) {
+	     var active = (viewLocation === $location.path());
+	     return active;
+	};
+	
+	$scope.isAuthorised = function(allowedRoles) {
+		var roles = allowedRoles.split(',');
+		for (var i = 0; i < roles.length; i++) {
+			allowed = sessionService.isAuthorised(roles[i]);
+			if (allowed) {
+				return true;
+			}
+		}
+		return false;
+	}
+}]);
+
+app.controller('LoginCtrl',['$rootScope','$scope','$http','$location','sessionService',function($rootScope,$scope,$http,$location,sessionService) {
+	
+	$rootScope.error = false;
+	var vm = this;
+	vm.username=undefined;
+	vm.password=undefined;
+	
+	vm.login = function(){
+		var config = {
+				params: {
+					username: vm.username,
+					password: vm.password
+				}
+		}
+		sessionService.login(config).then(function(response){
+			$rootScope.logged = true;
+			vm.loggedUser = sessionService.getUser();
+			console.log(vm.loggedUser);
+			$location.path('/home');
+		},function(response){
+			$rootScope.logged = false;
+			$rootScope.error = true;
+		});
+	}
+}]);
+
+app.controller('HomeCtrl', ['UserService','$rootScope', 'sessionService', function(UserService,$rootScope, sessionService){
+	
+	var self = this;
+	self.loggedUser = {};
+	self.loggedUser = sessionService.getUser();
+	self.user={id:self.loggedUser.id, firstName:self.loggedUser.firstName, lastName:self.loggedUser.lastName, address:self.loggedUser.address, email:self.loggedUser.email, username:self.loggedUser.username, password:self.loggedUser.password, roles:self.loggedUser.roles, salesUnit:self.loggedUser.salesUnit};
+	console.log(self.user);
+	self.updateUser = updateUser;
+	 function updateUser(){
+		 console.log("usao"+self.loggedUser);
+	     UserService.updateUser(self.user, self.user.id)
+	     	.then(
+	     			self.loggedUser.email = self.user.email
+	     			,function(errResponse){
+	     		console.error('Error while updating User');
+	            }
+	        );
+	    }
+}]);
+
+app.controller('UsersCtrl', ['$scope', 'UserService', function($scope, UserService){
+	
+	var self = this;
+    self.user={id:null,username:'',address:'',email:''};
+    self.users=[];
+ 
+    self.submit = submit;
+    self.edit = edit;
+    self.remove = remove;
+    self.reset = reset;
+ 
+ 
+    getAllUsers();
+ 
+   /* function getAllUsers(){
+    	UserService.getAllUsers().then(function(data){
+        	alert(data);
+    		self.users = data;
+    	}, function(error){
+    		alert(error.data);
+    	});
+    }*/
+    
+    function getAllUsers(){
+    	UserService.getAllUsers().then(function(response){
+    		self.users = response.data;
+    	}, function(error){
+    		alert(error.data);
+    	});
+    }
+ 
+    function edit(id){
+        console.log('id to be edited', id);
+        for(var i = 0; i < self.users.length; i++){
+            if(self.users[i].id === id) {
+                self.user = angular.copy(self.users[i]);
+                break;
+            }
+        }
+    }
+    
+    function submit() {
+        if(self.user.id===null){
+            console.log('Saving New User', self.user);
+            createUser(self.user);
+        }else{
+            updateUser(self.user, self.user.id);
+            console.log('User updated with id ', self.user.id);
+        }
+        reset();
+    }
+    
+    function createUser(user){
+        UserService.createUser(user)
+            .then(
+            fetchAllUsers,
+            function(errResponse){
+                console.error('Error while creating User');
+            }
+        );
+    }
+ 
+    function updateUser(user, id){
+    	console.log(self.user);
+        UserService.updateUser(user, id)
+            .then(
+            getAllUsers,
+            function(errResponse){
+                console.error('Error while updating User');
+            }
+        );
+    }
+ 
+    function deleteUser(id){
+        UserService.deleteUser(id)
+            .then(
+            fetchAllUsers,
+            function(errResponse){
+                console.error('Error while deleting User');
+            }
+        );
+    }
+ 
+    function remove(id){
+        console.log('id to be deleted', id);
+        if(self.user.id === id) {//clean form if the user to be deleted is shown there.
+            reset();
+        }
+        deleteUser(id);
+    }
+ 
+ 
+    function reset(){
+        self.user={id:null,username:'',address:'',email:''};
+        $scope.myForm.$setPristine();
+    }
+}]);

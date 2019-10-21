@@ -1,0 +1,97 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-show="salesUnitModalCtrl.data.id===undefined">Sales
+				Unit Registration</span> <span class="lead"
+				ng-show="salesUnitModalCtrl.data.id!=null">Sales Unit Update</span>
+		</div>
+		<div class="formcontainer">
+			<form ng-submit="salesUnitModalCtrl.submit()" name="myForm"
+				class="form-horizontal">
+				<input type="hidden" ng-model="salesUnitModalCtrl.data.id" />
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.name.$touched && myForm.name.$invalid }">
+					<label class="col-md-2 control-lable" for="name">Name</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.name"
+							id="name" name="name" class="form-control input-sm"
+							placeholder="Enter name" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.name.$error.required">This is a
+								required field.</span> <span ng-show="myForm.name.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.name.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.address.$touched && myForm.address.$invalid }">
+					<label class="col-md-2 control-lable" for="address">Address</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.address"
+							id="address" name="address" class="form-control input-sm"
+							placeholder="Enter address" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.address.$error.required">This is a
+								required field.</span> <span ng-show="myForm.address.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.address.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.email.$touched && myForm.email.$invalid }">
+					<label class="col-md-2 control-lable" for="email">Email</label>
+					<div class="col-md-7">
+						<input type="email" ng-model="salesUnitModalCtrl.data.email"
+							id="email" name="email" class="email form-control input-sm"
+							placeholder="Enter Email" required />
+						<div class="help-block">
+							<span ng-show="myForm.email.$error.required">This is a
+								required field.</span> <span ng-show="myForm.email.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group" ng-class="{ 'has-error': myForm.phone.$touched && myForm.phone.$invalid }">
+					<label class="col-md-2 control-lable" for="phone">Phone
+						number</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.phone"
+							id="phone" name="phone" class="text form-control input-sm"
+							placeholder="Enter Phone Number" required
+							ng-pattern="/^[0-9\s]*$/" />
+						<div class="help-block">
+							<span ng-show="myForm.phone.$error.required">This is a
+								required field.</span> <span ng-show="myForm.phone.$invalid">This
+								field is invalid. </span><span ng-show="myForm.phone.$error.pattern">This
+								fields' pattern is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group" ng-class="{ 'has-error': myForm.status.$touched && myForm.status.$invalid }">
+					<label class="col-md-2 control-lable" for="status">Status</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.status"
+							id="status" name="status" class="text form-control input-sm"
+							placeholder="Enter Status" required ng-pattern="/0-1/" />
+						<div class="help-block">
+							<span ng-show="myForm.status.$error.required">This is a
+								required field.</span> <span ng-show="myForm.status.$invalid">This
+								field is invalid. </span><span ng-show="myForm.status.$error.pattern">This
+								fields' pattern is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-actions floatRight">
+					<input type="submit"
+						value="{{!salesUnitModalCtrl.data.id ? 'Add' : 'Update'}}"
+						class="btn btn-primary btn-sm" ng-disabled="myForm.$invalid">
+					<button type="button" ng-click="salesUnitModalCtrl.reset()"
+						class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset
+						Form</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

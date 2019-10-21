@@ -1,0 +1,8 @@
+var app = angular.module('myApp');
+
+app.controller('ModalController', function($scope, data){
+	
+	var vm = this;
+	vm.data=data;
+	
+});

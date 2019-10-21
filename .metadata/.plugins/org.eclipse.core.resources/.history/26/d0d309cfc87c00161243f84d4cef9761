@@ -1,0 +1,17 @@
+var app = angular.module('myApp',['ngRoute']);
+
+app.config(function($routeProvider, $locationProvider){
+	
+	$routeProvider
+		.when('/home', {
+			templateUrl:'/seminarski-rad-d/home.html',
+			controller: 'IndexController'
+		})
+		.when('/login', {
+			templateUrl: '/seminarski-rad-d/login.html',
+			controller: 'LoginController'
+		})
+		.otherwise({
+			redirectTo: '/home'
+		})
+});

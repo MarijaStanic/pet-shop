@@ -1,0 +1,22 @@
+<div class="login-container">
+	<div class="login-card">
+		<div class="alert alert-danger" ng-show="error">
+			<p>Bad credentials, try again.</p>
+		</div>
+		<form ng-controller="LoginController" class="login-form">
+			<div class="input-group input-sm">
+				<label class="input-group-addon"><i class="fa fa-user"></i></label>
+				<input type="text" class="form-control" placeholder="Username"
+					ng-model="username">
+			</div>
+			<div class="input-group input-sm">
+				<label class="input-group-addon"><i class="fa fa-lock"></i></label>
+				<input type="password" class="form-control" placeholder="Password"
+					ng-model="password">
+			</div>
+			<br>
+			<button type="submit" class="btn btn-block btn-primary"
+				ng-click="login()">Login</button>
+		</form>
+	</div>
+</div>

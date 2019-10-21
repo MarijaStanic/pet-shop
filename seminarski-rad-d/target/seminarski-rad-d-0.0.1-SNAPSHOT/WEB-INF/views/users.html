@@ -1,0 +1,41 @@
+<div class="generic-container">
+	<div class="well">
+		<a ng-click="usersCtrl.popup('user', null, null)" href="">Add New User</a>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">List of Users</span>
+		</div>
+		<div class="tablecontainer">
+			<table datatable="ng" class="table table-hover">
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Address</th>
+						<th>Email</th>
+						<th>User name</th>
+						<th>Sales unit</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="u in usersCtrl.users">
+						<td><span ng-bind="u.firstName"></span></td>
+						<td><span ng-bind="u.lastName"></span></td>
+						<td><span ng-bind="u.address"></span></td>
+						<td><span ng-bind="u.email"></span></td>
+						<td><span ng-bind="u.username"></span></td>
+						<td><span ng-bind="u.salesUnit.name"></span></td>
+						<td>
+							<button type="submit" ng-click="usersCtrl.popup('user', u, $index)"
+								class="btn btn-success custom-width">Edit</button>
+							<button type="submit" ng-click="usersCtrl.remove(u.id)"
+								class="btn btn-danger custom-width">Remove</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

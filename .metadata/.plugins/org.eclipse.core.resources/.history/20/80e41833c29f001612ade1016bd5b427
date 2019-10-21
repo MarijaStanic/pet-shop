@@ -1,0 +1,95 @@
+var app = angular.module('myApp');
+
+app.factory('sessionService', function sessionService($http, $log) {
+	
+	var loggedUser;
+
+	var getLoggedUser = function() {
+		return $http.get('/seminarski-rad-d/user-login').then(function(response) {
+			loggedUser = response.data;
+			$log.info(response);
+		});
+	}
+
+	sessionService.login = function(config) {
+		return $http.post('login', '', config).then(function(response) {
+			return getLoggedUser();
+		}).then(function(response){
+			$log.info(response);
+		});
+	}
+	
+	sessionService.isAuthorised = function(role) {
+		if (loggedUser == null) {
+			return false;
+		}
+		for (var i = 0; i < loggedUser.authorities.length; i++) {
+			if (loggedUser.authorities[i].authority == role) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	sessionService.getUser = function() {
+		return loggedUser;
+	};
+
+	return sessionService;
+});
+
+app.factory('UserService', function userService($http, $log) {
+	
+/*	userService.update = function(user, id) {
+		return $http.put('../seminarski-rad-d/user/'+id,user);
+	}*/
+	
+	/*userService.getAllUsers = function() {
+        return $http.get('/seminarski-rad-d/allusers').then(function(response) {
+			$log.info(response);
+			return response.data;
+		});
+    }*/
+	
+	var users;
+	
+	userService.getAllUsers = function() {
+        return $http.get('/seminarski-rad-d/user').then(function(response){
+        	users=response.data;
+        });
+    }
+	
+	userService.updateUser = function(user, id) {
+        return $http.put('/seminarski-rad-d/user' + id, user);
+    }
+	
+	userService.getRoles = function() {
+		return $http({
+			method : 'GET',
+			url : '/seminarski-rad-d/roles'
+		});
+	}
+	
+	userService.getSalesUnits = function() {
+		return $http({
+			method : 'GET',
+			url : '/seminarski-rad-d/salesUnits'
+		});
+	}
+	
+	userService.createUser = function(user) {
+        return $http.post('/seminarski-rad-d/user', user);
+    }
+	
+	userService.getUsers = function() {
+		if(users){
+			return users;
+		}
+		userService.getAllUsers().then(function(response){
+        	users=response;
+        	return users;
+        });
+	}
+	
+	return userService;
+});

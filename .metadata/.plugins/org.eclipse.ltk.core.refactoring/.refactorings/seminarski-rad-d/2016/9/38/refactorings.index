@@ -1,0 +1,20 @@
+1473909712468	Delete element
+1473920531857	Delete element
+1473920638061	Delete element
+1473921090432	Rename package 'configuration'
+1473921106295	Rename package 'controller'
+1473921387759	Move 'index.html' to 'views'
+1474032140587	Rename type 'SecuritySettings'
+1474076633736	Move 'css' to 'webapp'
+1474076635942	Move 'fonts' to 'webapp'
+1474076637954	Move 'images' to 'webapp'
+1474076640051	Move 'js' to 'webapp'
+1474076827959	Delete element
+1474076988184	Move 'index.html' to 'WEB-INF'
+1474077212469	Move 'index.html' to 'views'
+1474081300392	Delete element
+1474085254695	Move 'header.html' to 'includes'
+1474105256239	Move 'login.html' to 'WEB-INF'
+1474106067257	Move 'login.html' to 'views'
+1474109502669	Move 'login.html' to 'WEB-INF'
+1474109802401	Move 'login.html' to 'views'

@@ -1,0 +1,115 @@
+var app = angular.module('myApp');
+
+app.controller('IndexCtrl', ['$scope','$location','sessionService', function($scope,$location, sessionService) {	
+	
+	if (!$scope.logged) {
+		$location.path('/login');
+	} else {
+		$location.path('/home');
+	}
+	
+	$scope.isActive = function (viewLocation) {
+	     var active = (viewLocation === $location.path());
+	     return active;
+	};
+	
+	$scope.isAuthorised = function(allowedRoles) {
+		var roles = allowedRoles.split(',');
+		for (var i = 0; i < roles.length; i++) {
+			allowed = sessionService.isAuthorised(roles[i]);
+			if (allowed) {
+				return true;
+			}
+		}
+		return false;
+	}
+}]);
+
+app.controller('LoginCtrl',['$rootScope','$scope','$http','$location','sessionService',function($rootScope,$scope,$http,$location,sessionService) {
+	
+	$rootScope.error = false;
+	var vm = this;
+	vm.username=undefined;
+	vm.password=undefined;
+	
+	vm.login = function(){
+		var config = {
+				params: {
+					username: vm.username,
+					password: vm.password
+				}
+		}
+		sessionService.login(config).then(function(response){
+			$rootScope.logged = true;
+			vm.loggedUser = sessionService.getUser();
+			console.log(vm.loggedUser);
+			$location.path('/home');
+		},function(response){
+			$rootScope.logged = false;
+			$rootScope.error = true;
+		});
+	}
+}]);
+
+app.controller('HomeCtrl', ['UserService','$rootScope', 'sessionService', function(UserService,$rootScope, sessionService){
+	
+	var self = this;
+	self.loggedUser = {};
+	self.loggedUser = sessionService.getUser();
+	self.user={id:self.loggedUser.id, firstName:self.loggedUser.firstName, lastName:self.loggedUser.lastName, address:self.loggedUser.address, email:self.loggedUser.email, username:self.loggedUser.username, password:self.loggedUser.password, roles:self.loggedUser.roles, salesUnit:self.loggedUser.salesUnit};
+	console.log(self.user);
+	self.updateUser = updateUser;
+	
+	 function updateUser(){
+		 console.log("usao"+self.loggedUser);
+	     UserService.updateUser(self.user, self.user.id)
+	     	.then(
+	     			self.loggedUser.email = self.user.email
+	     			,function(errResponse){
+	     		console.error('Error while updating User');
+	            }
+	        );
+	    }
+}]);
+
+app.controller('UsersCtrl', ['$scope', 'UserService', '$uibModal', function($scope, UserService, $uibModal){
+	
+	var self = this;
+    self.user={id:null,username:'',address:'',email:''};
+    self.users=[];
+ 
+    self.popup = popup;
+ 
+    getAllUsers();
+
+    function getAllUsers(){
+    	UserService.getAllUsers().then(function(response){
+    		self.users = response.data;
+    	}, function(error){
+    		alert(error.data);
+    	});
+    }
+ 
+/*   function edit(id){
+        console.log('id to be edited', id);
+        for(var i = 0; i < self.users.length; i++){
+            if(self.users[i].id === id) {
+                self.user = angular.copy(self.users[i]);
+                break;
+            }
+        }
+    }
+ */   
+    function popup(type, object) {
+		var modalInstance = $uibModal.open({
+			templateUrl: 'users/modals/userModal.html',
+			controller: 'ModalCtrl',
+			controllerAs: 'modalCtrl',
+			resolve: {
+				data: function() {
+					return object
+				}
+			}
+		});
+	}   
+}]);

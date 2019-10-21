@@ -1,0 +1,375 @@
+var app = angular.module('myApp');
+
+app.factory('sessionService', function sessionService($http) {
+	
+	var loggedUser;
+
+	var getLoggedUser = function() {
+		return $http.get('/seminarski-rad-d/user-login').then(function(response) {
+			loggedUser = response.data;
+			console.log(response);
+		});
+	}
+
+	sessionService.login = function(config) {
+		return $http.post('login', '', config).then(function(response) {
+			return getLoggedUser();
+		}).then(function(response){
+			console.log(response);
+		});
+	}
+	
+	sessionService.isAuthorised = function(role) {
+		if (loggedUser == null) {
+			return false;
+		}
+		for (var i = 0; i < loggedUser.authorities.length; i++) {
+			if (loggedUser.authorities[i].authority == role) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	sessionService.logout = function() {
+		return $http.post('/seminarski-rad-d/logout')
+		.then(function(response) {
+			loggedUser = null;
+		});
+	}
+
+	sessionService.getUser = function() {;
+		return loggedUser;
+	};
+
+	return sessionService;
+});
+
+app.factory('UserService', function($http) {
+	
+	var userService = {};
+	userService.data = {};
+	
+    userService.getAllUsers = function() {
+    	  	 $http.get('/seminarski-rad-d/user').then(function(response) {
+    	  		userService.data.users = response.data;
+    	  		userService.getRoles();
+		}, function(error) {
+			alert(error.data);
+		});
+      }
+	
+	userService.updateUser = function(user, id) {
+          return $http.put('/seminarski-rad-d/user' + id, user).then(function(response) {
+        	 userService.getAllUsers();
+        }, function(error) {
+        	console.error('Error while updating User');
+        });
+    }
+
+	userService.getRoles = function() {
+		 $http({
+			method : 'GET',
+			url : '/seminarski-rad-d/roles'
+		}).then(function(response) {
+			userService.data.roles = response.data;
+		}, function(error) {
+			alert(error.data);
+		});
+	}
+	
+	userService.createUser = function(user) {
+		 return $http.post('/seminarski-rad-d/user', user).then(function(response){ 
+     	    userService.getAllUsers();
+        },function(errResponse) {
+			if (errResponse.status == 409) {
+				alert(errResponse.data);
+			}
+			console.error('Error while creating User');
+        });
+    } 
+	
+	userService.deleteUser = function(id) {
+         $http.delete('/seminarski-rad-d/user' + id).then(function(){
+    	   userService.getAllUsers();
+       },function(errResponse) {
+    	   console.error('Error while deleting User');
+       });
+    }
+	
+	return userService;
+});
+
+app.factory('SalesUnitService', function($http) {
+	
+	var salesUnitService = {};
+	salesUnitService.data = {};
+	
+	salesUnitService.getSalesUnits = function() {
+			return $http({
+				method : 'GET',
+				url : '/seminarski-rad-d/sales-unit'
+			}).then(function(response) {
+				salesUnitService.data.salesUnits = response.data;
+			}, function(error) {
+				alert(error.data);
+			});	
+    }
+	
+	salesUnitService.updateSalesUnit = function(salesUnit, id) {
+        return $http.put('/seminarski-rad-d/sales-unit' + id, salesUnit).then(function(response){
+        	salesUnitService.getSalesUnits();
+        }, function(error){
+        	console.error('Error while updating Sales Unit');
+        });
+    }
+	
+	salesUnitService.createSalesUnit = function(salesUnit) {
+		return $http.post('/seminarski-rad-d/sales-unit', salesUnit).then(function(response){
+        	salesUnitService.getSalesUnits();
+        }, function(error){
+        	console.error('Error while creating Sales Unit');
+        });
+    }
+	
+	salesUnitService.deleteSalesUnit = function(id) {
+       return $http.delete('/seminarski-rad-d/sales-unit' + id).then(function(response){
+       	salesUnitService.getSalesUnits();
+       }, function(error){
+       	console.error('Error while deleting Sales Unit');
+       });
+    }
+	
+	return salesUnitService;
+});
+
+app.factory('CustomerService', function($http){
+	
+	var customerService = {};
+	
+	customerService.data = {};
+	
+	customerService.getCustomers = function() {
+		return $http.get('/seminarski-rad-d/customer').then(function(response){
+			customerService.data.customers = response.data;
+		}, function(error){
+			alert(error.data);
+		});	
+	}
+	
+	customerService.updateCustomer = function(customer, id) {
+        return $http.put('/seminarski-rad-d/customer' + id, customer).then(function(response){
+        	customerService.getCustomers();
+        }, function(error){
+        	console.error('Error while updating Customer');
+        });
+    }
+	
+	customerService.createCustomer = function(customer) {
+        return $http.post('/seminarski-rad-d/customer', customer).then(function(response){
+        	customerService.getCustomers();
+        }, function(error){
+        	console.error('Error while creating Customer');
+        });
+    }
+	
+	customerService.deleteCustomer = function(id) {
+       return $http.delete('/seminarski-rad-d/customer' + id).then(function(response){
+    	   customerService.getCustomers();
+       }, function(error){
+       	console.error('Error while deleting Customer');
+       });
+    }
+	
+	return customerService;
+});
+
+app.factory('StockService', ['$http', 'SalesUnitService', function($http, SalesUnitService){
+	
+	var stockService = {};
+	stockService.data = {};
+	stockService.salesUnitId = null;
+	stockService.product = null;
+	
+	stockService.getStocksForSalesUnit = function(salesUnitId){
+		return $http.get('/seminarski-rad-d/sales-unit/' + salesUnitId + '/stock').then(function(response) {
+			stockService.data.stocks = response.data;
+		}, function(error) {
+			alert(error.data);
+		});	
+	}
+	
+	stockService.getStocks = function(){
+		return $http.get('/seminarski-rad-d/stock').then(function(response) {
+			stockService.data.stocks = response.data;
+		}, function(error) {
+			alert(error.data);
+		});	
+	}
+	
+	stockService.updateStock = function(stock) {
+        return $http.put('/seminarski-rad-d/stock', stock).then(function(response){
+        	stock = response.data;
+        	updateStocks(stock);
+        }, function(error){
+        	console.error('Error while updating Stock');
+        });
+    }
+	
+	stockService.createStockForSalesUnit = function(stock) {
+        return $http.post('/seminarski-rad-d/sales-unit/' + stockService.salesUnitId + '/stock', stock).then(function(response){
+        	if(stockService.salesUnitId == null){ 
+     		   stockService.getStocks();
+     	   }else{
+     		   stockService.getStocksForSalesUnit();
+     	   }
+        }, function(error){
+        	console.error('Error while creating Stock');
+        });
+    }
+	
+	stockService.createStock = function(stock) {
+        return $http.post('/seminarski-rad-d/stock', stock).then(function(response){
+        	if(stockService.salesUnitId == null){ 
+     		   stockService.getStocks();
+     	   }else{
+     		   stockService.getStocksForSalesUnit();
+     	   }
+        }, function(error){
+        	console.error('Error while creating Stock');
+        });
+    }
+	
+	stockService.deleteStock = function(id, index) {
+       return $http.delete('/seminarski-rad-d/stock' + id).then(function(response){
+    	   stockService.data.stocks.splice(index, 1);
+       }, function(error){
+       	console.error('Error while deleting Stock');
+       });
+    }
+	
+	var updateStocks = function(stock){
+		for(var i=0; i<stockService.data.stocks.length;i++){
+			if(stockService.data.stocks[i].id == stock.id){
+				stockService.data.stocks[i] = stock;
+				break;
+			}
+		}
+	}
+	
+	return stockService;
+}]);
+
+app.factory('ProductService', function($http){
+
+	var productService = {};
+	productService.data = {};
+	
+	productService.supplier = null;
+
+	productService.getProducts = function() {
+		return $http.get('/seminarski-rad-d/product').then(function(response) {
+			productService.data.products = response.data;
+		}, function(error) {
+			alert(error.data);
+		});			
+	}
+	
+	productService.updateProduct = function(product, id) {
+        return $http.put('/seminarski-rad-d/product' + id, product).then(function(response){
+        	productService.getProducts();
+        }, function(error){
+        	console.error('Error while updating Product');
+        });
+    }
+	
+	productService.createProduct = function(product) {
+        return $http.post('/seminarski-rad-d/product', product).then(function(response){
+        	productService.getProducts();
+        }, function(error){
+        	console.error('Error while creating Product');
+        });
+    }
+	
+	productService.deleteProduct = function(id) {
+       return $http.delete('/seminarski-rad-d/product' + id).then(function(response){
+    	   productService.getProducts();
+       }, function(error){
+       	console.error('Error while deleting Product');
+       });
+    }
+	
+	return productService;
+});
+
+app.factory('SupplierService', function($http){
+	
+	var supplierService = {};
+	supplierService.data = {};
+	
+	supplierService.getSuppliers = function() {
+		return $http.get('/seminarski-rad-d/supplier').then(function(response) {
+			supplierService.data.suppliers = response.data;
+		}, function(error) {
+			alert(error.data);
+		});		
+	}
+	
+	supplierService.updateSupplier = function(supplier, id) {
+        return $http.put('/seminarski-rad-d/supplier' + id, supplier).then(function(response){
+        	supplierService.getSuppliers();
+        }, function(error){
+        	console.error('Error while updating Supplier');
+        });
+    }
+	
+	supplierService.createSupplier = function(supplier) {
+        return $http.post('/seminarski-rad-d/supplier', supplier).then(function(response){
+        	supplierService.getSuppliers();
+        }, function(error){
+        	console.error('Error while creating Supplier');
+        });
+    }
+	
+	supplierService.deleteSupplier = function(id) {
+       return $http.delete('/seminarski-rad-d/supplier' + id).then(function(response){
+    	   supplierService.getSuppliers();
+       }, function(error){
+       	console.error('Error while deleting Supplier');
+       });
+    }
+	
+	return supplierService;
+});
+
+app.factory('OrderService', function($http){
+	
+	var orderService = {};
+	orderService.data = {};
+	orderService.customer = null;
+	
+	orderService.getOrders = function() {
+		return $http.get('/seminarski-rad-d/order').then(function(response){
+			orderService.data.orders = response.data;
+		}, function(error){
+			alert(error);
+		});	
+	}
+	
+	orderService.createOrder = function(order, orderProducts) {
+        return $http({
+        	method: 'POST',
+        	url: '/seminarski-rad-d/order', 
+        	data: {
+        		order: order, 
+        		orderProducts: orderProducts
+        	}
+        }).then(function(response){
+        	orderService.getOrders();
+        }, function(error){
+        	onsole.error('Error while creating Order');
+        });
+    }
+	
+	return orderService;
+});

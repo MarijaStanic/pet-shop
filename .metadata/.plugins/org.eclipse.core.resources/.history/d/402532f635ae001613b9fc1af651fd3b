@@ -1,0 +1,633 @@
+var app = angular.module('myApp');
+
+app.controller('IndexCtrl', [ '$location', 'sessionService', '$rootScope',
+		function($location, sessionService, $rootScope) {
+
+			var self = this;
+
+			if (!$rootScope.logged) {
+				$location.path('/login');
+			} else {
+				$location.path('/home');
+			}
+
+			self.isActive = function(viewLocation) {
+				var active = (viewLocation === $location.path());
+				return active;
+			};
+
+			self.isAuthorised = function(allowedRoles) {
+				var roles = allowedRoles.split(',');
+				for (var i = 0; i < roles.length; i++) {
+					allowed = sessionService.isAuthorised(roles[i]);
+					if (allowed) {
+						return true;
+					}
+				}
+				return false;
+			}
+		} ]);
+
+app.controller('LoginCtrl', [ '$rootScope', '$scope', '$http', '$location',
+		'sessionService',
+		function($rootScope, $scope, $http, $location, sessionService) {
+
+			var vm = this;
+			$rootScope.error = false;
+
+			vm.login = function() {
+				var config = {
+					params : {
+						username : vm.username,
+						password : vm.password
+					}
+				}
+				sessionService.login(config).then(function(response) {
+					$rootScope.logged = true;
+			//		vm.loggedUser = sessionService.getUser();
+			//		console.log(vm.loggedUser);
+					$location.path('/home');
+				}, function(response) {
+					$rootScope.logged = false;
+					$rootScope.error = true;
+				});
+			}
+		} ]);
+
+app.controller('HomeCtrl', [
+		'UserService',
+		'$rootScope',
+		'sessionService',
+		function(UserService, $rootScope, sessionService) {
+
+			var self = this;
+
+			self.error = false;
+			self.showMessage = false;
+
+			self.loggedUser = sessionService.getUser();
+			self.userToUpdate = {
+				id : self.loggedUser.id,
+				firstName : self.loggedUser.firstName,
+				lastName : self.loggedUser.lastName,
+				address : self.loggedUser.address,
+				email : self.loggedUser.email,
+				username : self.loggedUser.username,
+				password : self.loggedUser.password,
+				roles : self.loggedUser.roles,
+				salesUnit : self.loggedUser.salesUnit
+			};
+
+			self.updateUser = updateUser;
+			self.user = angular.copy(self.userToUpdate);
+			self.user.email = null;
+			self.user.password = null;
+
+			function updateUser(toUpdate) {
+				if (toUpdate == 'email') {
+					if (self.user.email == null) {
+						self.error=true;
+						self.showMessage = true;
+						return;
+					}
+					self.userToUpdate.email == self.user.email;
+				} else {
+					if (self.user.password == null) {
+						self.error=true;
+						self.showMessage = true;
+						return;
+					}
+					self.userToUpdate.password = self.user.password;
+				}
+
+				UserService.updateUser(self.userToUpdate, self.userToUpdate.id)
+						.then(function(response) {
+							if (toUpdate == 'email') {
+								self.loggedUser.email = self.user.email;
+								self.user.email = null;
+							} else {
+								self.loggedUser.password = self.user.password;
+								self.user.password = null;
+
+							}
+							;
+							self.error = false;
+							self.showMessage = true;
+						}, function(errResponse) {
+							self.error = true;
+							self.showMessage = true;
+							console.error('Error while updating User');
+						});
+			}
+		} ]);
+
+app.controller('UsersCtrl', [
+		'UserService',
+		'$uibModal',
+		function(UserService, $uibModal) {
+
+			var self = this;
+			self.users;
+
+			self.remove = remove;
+			self.popup = popup;
+
+			getAllUsers();
+
+			function getAllUsers() {
+				UserService.getAllUsers().then(function(response) {
+					self.users = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteUser(id);
+			}
+
+			function deleteUser(id) {
+				UserService.deleteUser(id).then(getAllUsers,
+						function(errResponse) {
+							console.error('Error while deleting User');
+						});
+			}
+
+			function popup(type, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'users/modals/user-modal.html',
+					controller : 'UserModalCtrl',
+					controllerAs : 'modalCtrl',
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(user) {
+					if (index === null) {
+						self.users.push(user);
+						return;
+					}
+			//		console.log('user = ' + user.firstName + ' Finished at: '
+			//				+ new Date());
+					self.users[index] = user;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+		} ]);
+
+app.controller('SalesUnitsCtrl', [
+		'SalesUnitService',
+		'$uibModal',
+		'$location',
+		'ProductService',
+		function(SalesUnitService, $uibModal, $location, ProductService) {
+
+			var self = this;
+
+			self.salesUnits = [];
+			self.salesUnit = {};
+
+			self.remove = remove;
+			self.popup = popup;
+			self.view = view;
+			self.setSalesUnit = setSalesUnit;
+
+			getAllSalesUnits();
+
+			function getAllSalesUnits() {
+				SalesUnitService.getSalesUnits().then(function(response) {
+					self.salesUnits = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteSalesUnit(id);
+			}
+
+			function deleteSalesUnit(id) {
+				SalesUnitService.deleteSalesUnit(id).then(getAllSalesUnits,
+						function(errResponse) {
+							console.error('Error while deleting Sales Unit');
+						});
+			}
+
+			function popup(size, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'sales-units/modals/sales-unit-modal.html',
+					controller : 'SalesUnitModalCtrl',
+					controllerAs : 'salesUnitModalCtrl',
+					size : size,
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(salesUnit) {
+					if (index === null) {
+						self.salesUnits.push(salesUnit);
+						return;
+					}
+					console.log('sales unit = ' + salesUnit.name
+							+ ' Finished at: ' + new Date());
+					self.salesUnits[index] = salesUnit;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+
+			function view(path) {
+				console.log('path', path);
+				$location.path(path);
+			}
+
+			function setSalesUnit(salesUnit) {
+				console.log('sales unit', salesUnit);
+				self.salesUnit = salesUnit;
+				ProductService.salesUnit = salesUnit;
+				console.log('ispis', ProductService.salesUnit);
+			}
+		} ]);
+
+app.controller('CustomersCtrl', [
+		'CustomerService',
+		'$uibModal',
+		'OrderService',
+		function(CustomerService, $uibModal, OrderService) {
+
+			var self = this;
+
+			self.customers = [];
+
+			self.remove = remove;
+			self.popup = popup;
+			self.setSelectedCustomer = setSelectedCustomer;
+
+			getAllCustomers();
+
+			function getAllCustomers() {
+				CustomerService.getCustomers().then(function(response) {
+					self.customers = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteCustomer(id);
+			}
+
+			function deleteCustomer(id) {
+				CustomerService.deleteCustomer(id).then(getAllCustomers,
+						function(errResponse) {
+							console.error('Error while deleting Customer');
+						});
+			}
+
+			function popup(type, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'customers/modals/customer-modal.html',
+					controller : 'CustomerModalCtrl',
+					controllerAs : 'customerModalCtrl',
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(customer) {
+					if (index === null) {
+						self.customers.push(customer);
+						return;
+					}
+					console.log('customer = ' + customer.firstName
+							+ ' Finished at: ' + new Date());
+					self.customers[index] = customer;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+
+			function setSelectedCustomer(customer) {
+				OrderService.customer = customer;
+				console.log('in orderservice', OrderService.customer);
+			}
+		} ]);
+
+app.controller('StocksCtrl', [
+		'StockService',
+		'$uibModal',
+		'$routeParams',
+		'$location',
+		function(StockService, $uibModal, $routeParams, $location) {
+
+			var self = this;
+
+			self.stocks = [];
+
+			self.remove = remove;
+			self.popup = popup;
+
+			StockService.salesUnitId = $routeParams.id;
+
+			if ($location.path() === '/sales-units/1/stock') {
+				getStocksForSalesUnit();
+			} else {
+				getAllStocks();
+			}
+
+			/*
+			 * function checkVisibility(){ if($location.path() === '/orders'){
+			 * console.log('false') return false; } console.log('true') return
+			 * true; }
+			 */
+
+			function getStocksForSalesUnit() {
+				StockService.getStocksForSalesUnit(StockService.salesUnitId)
+						.then(function(response) {
+							self.stocks = response.data;
+						}, function(error) {
+							alert(error.data);
+						});
+			}
+
+			function getAllStocks() {
+				StockService.getStocks().then(function(response) {
+					self.stocks = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteStock(id);
+			}
+
+			function deleteStock(id) {
+				StockService.deleteStock(id).then(getStocksForSalesUnit,
+						function(errResponse) {
+							console.error('Error while deleting Stock');
+						});
+			}
+
+			function popup(type, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'stocks/modals/stock-modal.html',
+					controller : 'StockModalCtrl',
+					controllerAs : 'stockModalCtrl',
+					size : type,
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						},
+					}
+				});
+				modalInstance.result.then(function(stock) {
+					if (index === null) {
+						self.stocksForSalesUnit.push(stock);
+						return;
+					}
+					console.log('stock = ' + stock.id + ' Finished at: '
+							+ new Date());
+					self.stocksForSalesUnit[index] = stock;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+		} ]);
+
+app.controller('ProductsCtrl', [
+		'ProductService',
+		'$uibModal',
+		'StockService',
+		function(ProductService, $uibModal, StockService) {
+
+			var self = this;
+
+			self.products = [];
+
+			self.remove = remove;
+			self.popup = popup;
+			self.setSelectedProduct = setSelectedProduct;
+
+			getAllProducts();
+
+			function getAllProducts() {
+				ProductService.getProducts().then(function(response) {
+					self.products = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteProduct(id);
+			}
+
+			function deleteProduct(id) {
+				ProductService.deleteProduct(id).then(getAllProducts,
+						function(errResponse) {
+							console.error('Error while deleting Product');
+						});
+			}
+
+			function popup(size, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'products/modals/product-modal.html',
+					controller : 'ProductModalCtrl',
+					controllerAs : 'productModalCtrl',
+					size : size,
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(product) {
+					ProductService.supplier = null;
+					if (index === null) {
+						self.products.push(product);
+						return;
+					}
+					console.log('product = ' + product.name + ' Finished at: '
+							+ new Date());
+					self.products[index] = product;
+				}, function() {
+					ProductService.supplier = null;
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+
+			function setSelectedProduct(product) {
+				StockService.product = product;
+				console.log('in stockservice', StockService.product);
+			}
+		} ]);
+
+app.controller('SuppliersCtrl', [
+		'SupplierService',
+		'$uibModal',
+		'ProductService',
+		function(SupplierService, $uibModal, ProductService) {
+
+			var self = this;
+
+			self.suppliers = [];
+
+			self.remove = remove;
+			self.popup = popup;
+			self.setSelectedSupplier = setSelectedSupplier;
+
+			getAllSuppliers();
+
+			function getAllSuppliers() {
+				SupplierService.getSuppliers().then(function(response) {
+					self.suppliers = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function remove(id) {
+				console.log('id to be deleted', id);
+				deleteSupplier(id);
+			}
+
+			function deleteSupplier(id) {
+				SupplierService.deleteSupplier(id).then(getAllSuppliers,
+						function(errResponse) {
+							console.error('Error while deleting Supplier');
+						});
+			}
+
+			function popup(type, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'suppliers/modals/supplier-modal.html',
+					controller : 'SupplierModalCtrl',
+					controllerAs : 'supplierModalCtrl',
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(supplier) {
+					if (index === null) {
+						self.suppliers.push(supplier);
+						return;
+					}
+					console.log('Supplier = ' + supplier.firstName
+							+ ' Finished at: ' + new Date());
+					self.suppliers[index] = supplier;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+
+			function setSelectedSupplier(supplier) {
+				ProductService.supplier = supplier;
+				console.log('ispis', ProductService.supplier);
+			}
+		} ]);
+
+app.controller('TabCtrl', function() {
+
+	var self = this;
+
+	self.steps = [ 'one', 'two' ];
+	self.step = 0;
+
+	self.isCurrentStep = function(step) {
+		return self.step === step;
+	}
+
+	self.setCurrentStep = function(step) {
+		self.step = step;
+	}
+
+	self.getCurrentStep = function() {
+		return self.steps[self.step];
+	}
+
+	self.isFirstStep = function() {
+		return self.step === 0;
+	}
+
+	self.isLastStep = function() {
+		return self.step === (self.steps.length - 1);
+	}
+
+	self.getNextLabel = function() {
+		return (self.isLastStep()) ? 'Submit' : 'Next';
+	}
+
+	self.handlePrevious = function() {
+		self.step -= (self.isFirstStep()) ? 0 : 1;
+	}
+	
+	self.handleNext = function() {
+		if (self.tabCtrl.isLastStep()) {
+			submit();
+		} else {
+			self.step += 1;
+		}
+	};
+});
+
+app.controller('OrdersCtrl', [
+		'OrderService',
+		'$uibModal',
+		function(OrderService, $uibModal) {
+
+			var self = this;
+
+			self.orders = [];
+
+			self.popup = popup;
+
+			getAllOrders();
+
+			function getAllOrders() {
+				OrderService.getOrders().then(function(response) {
+					self.orders = response.data;
+				}, function(error) {
+					alert(error.data);
+				});
+			}
+
+			function popup(type, object, index) {
+				var modalInstance = $uibModal.open({
+					templateUrl : 'orders/modals/order-create.html',
+					controller : 'OrderModalCtrl',
+					controllerAs : 'orderModalCtrl',
+					size : type,
+					resolve : {
+						data : function() {
+							return angular.copy(object);
+						}
+					}
+				});
+				modalInstance.result.then(function(order) {
+					console.log(order);
+					if (index === null) {
+						self.orders.push(order);
+						return;
+					}
+					console.log('order = ' + order.id + ' Finished at: '
+							+ new Date());
+					self.orders[index] = order;
+				}, function() {
+					console.log('Modal dismissed at: ' + new Date());
+				});
+			}
+		} ]);

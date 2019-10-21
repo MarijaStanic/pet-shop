@@ -1,0 +1,136 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-show="modalCtrl.data.id===undefined">User
+				Registration</span> <span class="lead" ng-show="modalCtrl.data.id!=null">User
+				Update</span>
+		</div>
+		<div class="formcontainer">
+			<form ng-submit="modalCtrl.submit()" name="myForm"
+				class="form-horizontal">
+				<input type="hidden" ng-model="modalCtrl.data.id" />
+
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.firstName.$touched && myForm.firstName.$invalid }">
+					<label class="col-md-2 control-lable" for="firstName">First
+						name</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="modalCtrl.data.firstName"
+							id="firstName" name="firstName" class="form-control input-sm"
+							placeholder="Enter first name" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.firstName.$error.required">This is a
+								required field.</span> <span
+								ng-show="myForm.firstName.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.firstName.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.lastName.$touched && myForm.lastName.$invalid }">
+					<label class="col-md-2 control-lable" for="lastName">Last
+						name</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="modalCtrl.data.lastName"
+							id="lastName" name="lastName" class="form-control input-sm"
+							placeholder="Enter last name" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.lastName.$error.required">This is a
+								required field.</span> <span ng-show="myForm.lastName.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.lastName.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.address.$touched && myForm.address.$invalid }">
+					<label class="col-md-2 control-lable" for="address">Address</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="modalCtrl.data.address" id="address"
+							name="address" class="form-control input-sm"
+							placeholder="Enter address" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.address.$error.required">This is a
+								required field.</span> <span ng-show="myForm.address.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.address.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.uname.$touched && myForm.uname.$invalid }">
+					<label class="col-md-2 control-lable" for="uname">Username</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="modalCtrl.data.username" id="uname"
+							name="uname" class="form-control input-sm"
+							placeholder="Enter your name" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.uname.$error.required">This is a
+								required field.</span> <span ng-show="myForm.uname.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.uname.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.password.$touched && myForm.password.$invalid }">
+					<label class="col-md-2 control-lable" for="password">Password</label>
+					<div class="col-md-7">
+						<input type="password" ng-model="modalCtrl.data.password"
+							id="password" name="password" class="form-control input-sm"
+							placeholder="Enter password" required ng-minlength="3" />
+						<div class="help-block">
+							<span ng-show="myForm.password.$error.required">This is a
+								required field.</span> <span ng-show="myForm.password.$error.minlength">Minimum
+								length required is 3.</span> <span ng-show="myForm.password.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': myForm.email.$touched && myForm.email.$invalid }">
+					<label class="col-md-2 control-lable" for="email">Email</label>
+					<div class="col-md-7">
+						<input type="email" ng-model="modalCtrl.data.email" id="email"
+							name="email" class="email form-control input-sm"
+							placeholder="Enter your Email" required />
+						<div class="help-block">
+							<span ng-show="myForm.email.$error.required">This is a
+								required field.</span> <span ng-show="myForm.email.$invalid">This
+								field is invalid. </span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-lable" for="userRoles">Roles</label>
+					<div class="col-md-7">
+						<select class="form-control input-sm" multiple name="role"
+							id="userRoles" ng-model="modalCtrl.data.roles"
+							ng-options="role.type for role in modalCtrl.roles track by role.id">
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-lable" for="salesUnits">Sales
+						Unit</label>
+					<div class="col-md-7">
+						<select class="form-control input-sm" name="role" id="salesUnits"
+							ng-model="modalCtrl.data.salesUnit"
+							ng-options="salesUnit.name for salesUnit in modalCtrl.salesUnits track by salesUnit.id">
+
+						</select>
+					</div>
+				</div>
+				<div class="form-actions floatRight">
+					<input type="submit"
+						value="{{!modalCtrl.data.id ? 'Add' : 'Update'}}"
+						class="btn btn-primary btn-sm" ng-disabled="myForm.$invalid">
+					<button type="button" ng-click="modalCtrl.reset()"
+						class="btn btn-warning btn-sm" ng-disabled="myForm.$pristine">Reset
+						Form</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

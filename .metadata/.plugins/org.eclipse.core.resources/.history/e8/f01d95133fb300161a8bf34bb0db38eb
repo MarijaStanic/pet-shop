@@ -1,0 +1,46 @@
+var app = angular.module('myApp');
+
+app.directive('convertToNumber', function() {
+	return {
+		require : 'ngModel',
+		link : function(scope, element, attrs, ngModel) {
+			ngModel.$parsers.push(function(val) {
+				return parseInt(val, 10);
+			});
+			ngModel.$formatters.push(function(val) {
+				return '' + val;
+			});
+		}
+	};
+});
+
+app.directive('modalViewUrl', function($uibModal) {
+
+	return {
+		restrict : 'A',
+		scope : {
+			'modalViewUrl' : '@',
+			'modalController' : '@',
+			object : '=',
+			size: '@'
+		},
+		link : function($scope, element, attrs) {
+
+			element.bind('click', function() {
+
+				var templateUrl = $scope.modalViewUrl;
+
+				var modalInstance = $uibModal.open({
+					size : $scope.size,
+					templateUrl : templateUrl,
+					controller : $scope.modalController,
+					resolve : {
+						data : function() {
+							return angular.copy($scope.object);
+						}
+					}
+				});
+			});
+		}
+	};
+});

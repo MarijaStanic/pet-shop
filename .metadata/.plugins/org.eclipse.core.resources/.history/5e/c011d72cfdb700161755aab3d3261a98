@@ -1,0 +1,49 @@
+<div class="generic-container">
+	<div class="well" ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')>
+		<a modal-view-url="sales-units/modals/sales-unit-modal.html"
+			modal-controller='SalesUnitModalCtrl as salesUnitModalCtrl'
+			object="{}" href="">Add New Sales Unit</a>
+	</div>
+	<div class="well" ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')>
+		<a href="#/stocks">View All Stocks</a>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">List of Sales Units</span>
+		</div>
+		<div class="tablecontainer">
+			<table datatable="ng" class="table table-hover">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Address</th>
+						<th>Email</th>
+						<th>Phone number</th>
+						<th>Status</th>
+						<th ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="su in salesUnitsCtrl.data.salesUnits">
+						<td><span ng-bind="su.name"></span></td>
+						<td><span ng-bind="su.address"></span></td>
+						<td><span ng-bind="su.email"></span></td>
+						<td><span ng-bind="su.phone"></span></td>
+						<td><span ng-bind="su.status"></span></td>
+						<td ng-show=indexCtrl.isAuthorised('ROLE_ADMIN')>
+							<button
+								ng-click="salesUnitsCtrl.view('/sales-units/'+su.id+'/stock')"
+								class="btn btn-success custom-width">Stock</button>
+							<button type="submit"
+								modal-view-url="sales-units/modals/sales-unit-modal.html"
+								modal-controller='SalesUnitModalCtrl as salesUnitModalCtrl'
+								object="su" class="btn btn-success custom-width">Edit</button>
+							<button ng-click="salesUnitsCtrl.deleteSalesUnit(su.id)"
+								class="btn btn-danger custom-width">Remove</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

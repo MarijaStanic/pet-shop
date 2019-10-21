@@ -1,0 +1,104 @@
+package model;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the orderr_product database table.
+ * 
+ */
+@Entity
+@Table(name="orderr_product")
+@NamedQuery(name="OrderProduct.findAll", query="SELECT o FROM OrderProduct o")
+public class OrderProduct implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String id;
+
+	private int quantity;
+
+	//bi-directional many-to-one association to Order
+	@ManyToOne
+	@JoinColumn(name="order_id")
+	private Order orderr;
+
+	//bi-directional many-to-one association to Stock
+	@ManyToOne
+	@JoinColumn(name="stock_id")
+	private Stock stock1;
+
+	//bi-directional one-to-one association to Stock
+	@OneToOne(mappedBy="orderrProduct1")
+	private Stock stock2;
+
+	//bi-directional one-to-one association to Stock
+	@OneToOne(mappedBy="orderrProduct2")
+	private Stock stock3;
+
+	//bi-directional one-to-one association to Stock
+	@OneToOne(mappedBy="orderrProduct3")
+	private Stock stock4;
+
+	public OrderProduct() {
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getQuantity() {
+		return this.quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public Order getOrderr() {
+		return this.orderr;
+	}
+
+	public void setOrderr(Order orderr) {
+		this.orderr = orderr;
+	}
+
+	public Stock getStock1() {
+		return this.stock1;
+	}
+
+	public void setStock1(Stock stock1) {
+		this.stock1 = stock1;
+	}
+
+	public Stock getStock2() {
+		return this.stock2;
+	}
+
+	public void setStock2(Stock stock2) {
+		this.stock2 = stock2;
+	}
+
+	public Stock getStock3() {
+		return this.stock3;
+	}
+
+	public void setStock3(Stock stock3) {
+		this.stock3 = stock3;
+	}
+
+	public Stock getStock4() {
+		return this.stock4;
+	}
+
+	public void setStock4(Stock stock4) {
+		this.stock4 = stock4;
+	}
+
+}

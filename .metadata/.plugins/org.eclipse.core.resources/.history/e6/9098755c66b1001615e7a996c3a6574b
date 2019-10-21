@@ -1,0 +1,57 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-show="stockModalCtrl.data.id===undefined">Stock
+				Registration</span> <span class="lead"
+				ng-show="stockModalCtrl.data.id!=null">Stock Update</span>
+		</div>
+		<div class="formcontainer">
+			<form name="stockModalCtrl.myForm" class="form-horizontal">
+				<input type="hidden" ng-model="stockModalCtrl.data.id" />
+
+				<div class="form-group"
+					ng-class="{ 'has-error': stockModalCtrl.myForm.quantity.$touched && stockModalCtrl.myForm.quantity.$invalid }">
+					<label class="col-md-2 control-lable" for="name">Quantity</label>
+					<div class="col-md-7">
+						<input type="number" ng-model="stockModalCtrl.data.quantity"
+							id="quantity" name="quantity" class="form-control input-sm"
+							placeholder="Enter quantity"
+							ng-pattern="^[1-9][0-9]*$" required />
+						<div class="help-block" ng-messages="stockModalCtrl.myForm.quantity.$error">
+							<div ng-messages-include="includes/messages.html"></div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-2 control-lable" for="salesUnits">Sales
+						Unit</label>
+					<div class="col-md-7">
+						<select class="form-control input-sm" id="salesUnits"
+							ng-model="stockModalCtrl.stockServiceData.salesUnitId"
+							ng-options="salesUnit.id as salesUnit.name for salesUnit in stockModalCtrl.salesUnits track by salesUnit.id">
+						</select>
+					</div>
+				</div>
+			</form>
+			<div ng-controller="ProductsCtrl as productsCtrl">
+				<p>
+					<b><em>Select a product by clicking on row in the table.</em></b>
+				</p>
+				<p>
+					<b>Selected Product </b><span
+						ng-bind="stockModalCtrl.data.product.name"></span>
+				</p>
+				<div ng-include="'/seminarski-rad-d/products/products.html'"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary btn-sm"
+		ng-click="stockModalCtrl.submit()"
+		ng-disabled="stockModalCtrl.isNextAvailable()">{{!stockModalCtrl.data.id
+		? 'Add' : 'Update'}}</button>
+	<button type="button" ng-click="stockModalCtrl.reset()"
+		class="btn btn-warning btn-sm" ng-disabled="stockModalCtrl.myForm.$pristine">Reset
+		Form</button>
+</div>

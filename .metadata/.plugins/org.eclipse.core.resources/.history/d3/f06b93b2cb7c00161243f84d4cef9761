@@ -1,0 +1,17 @@
+var app = angular.module('myApp');
+
+app.controller('IndexController', ['$scope','$location',function($scope,$location) {	
+	if (!$scope.logged) {
+		$location.path('/login');
+	} else {
+		$location.path('/home');
+	}
+}]);
+
+app.controller('HomeController', function($scope){
+	
+})
+
+app.controller('LoginController', function($scope){
+	
+})

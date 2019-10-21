@@ -1,0 +1,38 @@
+var app = angular.module('myApp');
+
+app.controller('IndexController', ['$scope','$location',function($scope,$location) {	
+	if (!$scope.logged) {
+		$location.path('/login');
+	} else {
+		$location.path('/home');
+	}
+}]);
+
+app.controller('LoginController',['$rootScope','$scope','$http','$location','sessionService',function($rootScope,$scope,$http,$location,sessionService){
+	
+	$scope.message1 = "message in rootScope";
+	$rootScope.error = false;
+	$scope.login = function(){
+		var config = {
+				params: {
+					username: $scope.username,
+					password: $scope.password
+				}
+		}
+		sessionService.login(config).then(function(response){
+			$rootScope.logged = true;
+			$scope.$parent.message = "message in scope";
+			$rootScope.loggedUser = sessionService.getUser();
+			$scope.mara = "bla";
+			$location.path('/home');
+		},function(){
+			$rootScope.logged = false;
+			$rootScope.error = true;
+		})
+	}
+}]);
+
+app.controller('HomeController', function($scope){
+	
+});
+

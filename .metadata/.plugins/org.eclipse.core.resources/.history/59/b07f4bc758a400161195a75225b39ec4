@@ -1,0 +1,102 @@
+package stanic.marija.model;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+
+/**
+ * The persistent class for the stock database table.
+ * 
+ */
+@Entity
+@NamedQuery(name="Stock.findAll", query="SELECT s FROM Stock s")
+public class Stock implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String id;
+
+	private int available;
+
+	private int quantity;
+
+	//bi-directional one-to-one association to OrderProduct
+	@OneToOne
+	@JoinColumn(name="id")
+	private OrderProduct orderrProduct1;
+
+	//bi-directional many-to-one association to Product
+	@ManyToOne
+	private Product product;
+
+	//bi-directional many-to-one association to SalesUnit
+	@ManyToOne
+	@JoinColumn(name="sales_unit_id")
+	private SalesUnit salesUnit;
+
+	//bi-directional one-to-one association to OrderProduct
+	@OneToOne
+	@JoinColumn(name="id")
+	private OrderProduct orderrProduct2;
+
+	public Stock() {
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getAvailable() {
+		return this.available;
+	}
+
+	public void setAvailable(int available) {
+		this.available = available;
+	}
+
+	public int getQuantity() {
+		return this.quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public OrderProduct getOrderrProduct1() {
+		return this.orderrProduct1;
+	}
+
+	public void setOrderrProduct1(OrderProduct orderrProduct1) {
+		this.orderrProduct1 = orderrProduct1;
+	}
+
+	public Product getProduct() {
+		return this.product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public SalesUnit getSalesUnit() {
+		return this.salesUnit;
+	}
+
+	public void setSalesUnit(SalesUnit salesUnit) {
+		this.salesUnit = salesUnit;
+	}
+
+	public OrderProduct getOrderrProduct2() {
+		return this.orderrProduct2;
+	}
+
+	public void setOrderrProduct2(OrderProduct orderrProduct2) {
+		this.orderrProduct2 = orderrProduct2;
+	}
+
+}

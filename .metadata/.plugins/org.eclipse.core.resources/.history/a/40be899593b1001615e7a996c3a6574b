@@ -1,0 +1,87 @@
+<div class="modal-body">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead" ng-bind="salesUnitModalCtrl.data.id===undefined ? 'Sales
+				Unit Registration' : 'Sales Unit Update'"></span> 
+		</div>
+		
+		<span ng-bind="indexCtrl.num"></span>
+		
+		<div class="formcontainer">
+			<form ng-submit="salesUnitModalCtrl.submit()" name="salesUnitModalCtrl.myForm"
+				class="form-horizontal">
+				<input type="hidden" ng-model="salesUnitModalCtrl.data.id" />
+				<div class="form-group"
+					ng-class="{ 'has-error': salesUnitModalCtrl.myForm.name.$touched && salesUnitModalCtrl.myForm.name.$invalid }">
+					<label class="col-md-2 control-lable" for="name">Name</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.name"
+							id="name" name="name" class="form-control input-sm"
+							placeholder="Enter name" required ng-minlength="3" />
+						<div class="help-block" ng-messages="salesUnitModalCtrl.myForm.name.$error">
+							<div ng-messages-include="includes/messages.html"></div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': salesUnitModalCtrl.myForm.address.$touched && salesUnitModalCtrl.myForm.address.$invalid }">
+					<label class="col-md-2 control-lable" for="address">Address</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.address"
+							id="address" name="address" class="form-control input-sm"
+							placeholder="Enter address" required ng-minlength="3" />
+						<div class="help-block" ng-messages="salesUnitModalCtrl.myForm.address.$error">
+							<div ng-messages-include="includes/messages.html"></div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': salesUnitModalCtrl.myForm.email.$touched && salesUnitModalCtrl.myForm.email.$invalid }">
+					<label class="col-md-2 control-lable" for="email">Email</label>
+					<div class="col-md-7">
+						<input type="email" ng-model="salesUnitModalCtrl.data.email"
+							id="email" name="email" class="email form-control input-sm"
+							placeholder="Enter Email" required />
+						<div class="help-block" ng-messages="salesUnitModalCtrl.myForm.email.$error">
+							<div ng-messages-include="includes/messages.html"></div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': salesUnitModalCtrl.myForm.phone.$touched && salesUnitModalCtrl.myForm.phone.$invalid }">
+					<label class="col-md-2 control-lable" for="phone">Phone
+						number</label>
+					<div class="col-md-7">
+						<input type="text" ng-model="salesUnitModalCtrl.data.phone"
+							id="phone" name="phone" class="text form-control input-sm"
+							placeholder="Enter Phone Number" required
+							ng-pattern="/^[0-9\s]*$/" />
+						<div class="help-block" ng-messages="salesUnitModalCtrl.myForm.phone.$error">
+							<div ng-messages-include="includes/messages.html"></div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group"
+					ng-class="{ 'has-error': salesUnitModalCtrl.myForm.status.$touched && salesUnitModalCtrl.myForm.status.$invalid }">
+					<label class="col-md-2 control-lable" for="status">Status</label>
+					<div class="col-md-7">
+						<select class="form-control input-sm"
+							ng-model="salesUnitModalCtrl.data.status" id="status"
+							name="status" convert-to-number required>
+							<option value=0>Not Active</option>
+							<option value=1>Active</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-actions floatRight">
+					<input type="submit"
+						value="{{!salesUnitModalCtrl.data.id ? 'Add' : 'Update'}}"
+						class="btn btn-primary btn-sm" ng-disabled="salesUnitModalCtrl.myForm.$invalid">
+					<button type="button" ng-click="salesUnitModalCtrl.reset()"
+						class="btn btn-warning btn-sm" ng-disabled="salesUnitModalCtrl.myForm.$pristine">Reset
+						Form</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

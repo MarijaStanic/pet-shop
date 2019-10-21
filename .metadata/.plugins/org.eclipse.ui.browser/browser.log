@@ -1,0 +1,7 @@
+
+Jan 20, 2017 09:08:12.29 NEW SESSION
+Jan 20, 2017 09:08:12.29 [6184:13008:0120/090812:ERROR:connection_factory_impl.cc(367)] Failed to connect to MCS endpoint with error -111
+Jan 20, 2017 09:18:03.54 [6184:13008:0120/091803:ERROR:connection_factory_impl.cc(367)] Failed to connect to MCS endpoint with error -105
+Jan 20, 2017 09:22:46.86 [6184:13008:0120/092246:ERROR:connection_factory_impl.cc(367)] Failed to connect to MCS endpoint with error -111
+Jan 20, 2017 09:27:59.18 [6184:13008:0120/092759:ERROR:connection_factory_impl.cc(367)] Failed to connect to MCS endpoint with error -111
+Jan 20, 2017 09:28:16.90 [6184:13008:0120/092816:ERROR:connection_factory_impl.cc(367)] Failed to connect to MCS endpoint with error -105
