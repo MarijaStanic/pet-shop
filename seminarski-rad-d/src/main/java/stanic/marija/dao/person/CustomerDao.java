@@ -7,9 +7,5 @@ import stanic.marija.model.Customer;
 
 public interface CustomerDao extends GenericDao<Integer, Customer>{
 
-	List<Customer> getCustomers();
 
-	void saveCustomer(Customer customer);
-
-	Customer findById(int id);
 }

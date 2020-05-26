@@ -8,7 +8,7 @@ public interface RoleService {
 
 	List<Role> getRoles();
 	
-	Role findById(int id);
+	Role findById(Integer id);
 	 
     Role findByType(String type);
 	

@@ -1,5 +1,7 @@
 package stanic.marija.dao;
 
+import java.util.List;
+
 public interface GenericDao<PK,T> {
 	
 	T getByKey(PK key);
@@ -9,4 +11,6 @@ public interface GenericDao<PK,T> {
 	void update(T entity);
 	
 	void delete(T entity);
+	
+	List<T> findAll();
 }

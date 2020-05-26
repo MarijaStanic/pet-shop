@@ -24,22 +24,22 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-		dao.saveUser(user);	
+		dao.persist(user);	
 	}
 
 	@Override
-	public User findById(int id) {
-		return dao.findById(id);
+	public User findById(Integer id) {
+		return dao.getByKey(id);
 	}
 
 	@Override
 	public List<User> getAllUsers() {
-		return dao.getAllUsers();
+		return dao.findAll();
 	}
 
 	@Override
 	public User updateUser(User user) {
-		User entity = dao.findById(user.getId());
+		User entity = dao.getByKey(user.getId());
         if(entity!=null){
         	entity.setFirstName(user.getFirstName());
             entity.setLastName(user.getLastName());
@@ -74,21 +74,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean isUserExist(User user) {
+	public boolean doesUserExist(User user) {
 	       return findByUsername(user.getUsername())!=null;
 	}
 
 	@Override
-	public void deleteAllUsers() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteUserById(int id) {
+	public void deleteUserById(Integer id) {
 		User entity = findById(id);
 		dao.delete(entity);
-		
-	};
-
+	}
 }

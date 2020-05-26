@@ -71,31 +71,4 @@ public class AccountUserDetails implements UserDetails {
 		return true;
 	}
 
-	public int getId() {
-		return user.getId();
-	}
-
-	public String getFirstName() {
-		return user.getFirstName();
-	}
-
-	public String getLastName() {
-		return user.getLastName();
-	}
-
-	public String getAddress() {
-		return user.getAddress();
-	}
-
-	public String getEmail() {
-		return user.getEmail();
-	}
-
-	public SalesUnit getSalesUnit() {
-		return user.getSalesUnit();
-	}
-
-	public List<Role> getRoles() {
-		return user.getRoles();
-	}
 }

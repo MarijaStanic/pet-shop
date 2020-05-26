@@ -19,18 +19,18 @@ public class SalesUnitServiceImpl implements SalesUnitService {
 
 	@Override
 	public List<SalesUnit> getSalesUnits() {
-		return salesUnitDao.getSalesUnits();
+		return salesUnitDao.findAll();
 	}
 
 	@Override
 	public void saveSalesUnit(SalesUnit salesUnit) {
-		salesUnitDao.saveSalesUnit(salesUnit);
+		salesUnitDao.persist(salesUnit);
 
 	}
 
 	@Override
 	public SalesUnit updateSalesUnit(SalesUnit salesUnit) {
-		SalesUnit entity = salesUnitDao.findById(salesUnit.getId());
+		SalesUnit entity = salesUnitDao.getByKey(salesUnit.getId());
 		if (entity != null) {
 			entity.setName(salesUnit.getName());
 			entity.setAddress(salesUnit.getAddress());
@@ -43,14 +43,13 @@ public class SalesUnitServiceImpl implements SalesUnitService {
 	}
 
 	@Override
-	public SalesUnit findById(int id) {
-		return salesUnitDao.findById(id);
+	public SalesUnit findById(Integer id) {
+		return salesUnitDao.getByKey(id);
 	}
 
 	@Override
-	public void deleteSalesUnitById(int id) {
+	public void deleteSalesUnitById(Integer id) {
 		SalesUnit entity = findById(id);
 		salesUnitDao.delete(entity);
-		
 	}
 }

@@ -43,7 +43,7 @@ public class SupplierServiceImpl implements SupplierService{
 	}
 
 	@Override
-	public void deleteSupplierById(int id) {
+	public void deleteSupplierById(Integer id) {
 		Supplier supplier = supplierDao.getByKey(id);
 		supplierDao.delete(supplier);
 		

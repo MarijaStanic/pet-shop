@@ -12,8 +12,8 @@ public interface SalesUnitService {
 
 	SalesUnit updateSalesUnit(SalesUnit salesUnit);
 
-	SalesUnit findById(int id);
+	SalesUnit findById(Integer id);
 
-	void deleteSalesUnitById(int id);
+	void deleteSalesUnitById(Integer id);
 	
 }

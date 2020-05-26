@@ -1,5 +1,6 @@
 package stanic.marija.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.StreamingHttpOutputMessage.Body;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +25,6 @@ public class UserController {
 	
 	@Autowired
     UserService userService;
-	
-	 //-------------------Retrieve All Users--------------------------------------------------------
     
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ResponseEntity<List<User>> getAllUsers() {
@@ -33,10 +34,6 @@ public class UserController {
         }
         return new ResponseEntity<List<User>>(users, HttpStatus.OK);
     }
-  
-  
-     
-    //-------------------Retrieve Single User--------------------------------------------------------
       
     @RequestMapping(value = "/user{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getUser(@PathVariable("id") int id) {
@@ -48,32 +45,23 @@ public class UserController {
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
-  
-      
-      
-    //-------------------Create a User--------------------------------------------------------
       
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestBody User user) {
-        if (userService.isUserExist(user)) {
+        if (userService.doesUserExist(user)) {
             System.out.println("A User with name " + user.getUsername() + " already exist");
             return new ResponseEntity<String>("Username already exists. Please choose another one.", HttpStatus.CONFLICT);
         }
         userService.saveUser(user);
         return new ResponseEntity<String>(HttpStatus.CREATED);
     }
-  
-    //------------------- Update a User --------------------------------------------------------
       
     @RequestMapping(value = "/user{id}", method = RequestMethod.PUT)
     public ResponseEntity<User> updateUser(@PathVariable("id") int id, @RequestBody  User user) {
     	User updatedUser = userService.updateUser(user);
         return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
     }
-  
-     
-    //------------------- Delete a User --------------------------------------------------------
-      
+       
     @RequestMapping(value = "/user{id}", method = RequestMethod.DELETE)
     public ResponseEntity<User> deleteUser(@PathVariable("id") int id) {
         System.out.println("Fetching & Deleting User with id " + id);
@@ -87,17 +75,19 @@ public class UserController {
         userService.deleteUserById(id);
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
     }
-  
-      
-     
-    //------------------- Delete All Users --------------------------------------------------------
       
     @RequestMapping(value = "/user/", method = RequestMethod.DELETE)
     public ResponseEntity<User> deleteAllUsers() {
         System.out.println("Deleting All Users");
   
-        userService.deleteAllUsers();
+       // userService.deleteAllUsers();
         return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
     }
+    
+	@RequestMapping(path="/loggedin", method = RequestMethod.GET)
+	public User user(Principal user){
+		return userService.findByUsername(user.getName());
+	}	
+
    
 }

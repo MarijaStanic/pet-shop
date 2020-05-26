@@ -18,11 +18,4 @@ public class StockDaoImpl extends AbstractDao<Integer, Stock> implements StockDa
 		return stocks;
 	}
 
-	@Override
-	public List<Stock> getStocks() {
-		@SuppressWarnings("unchecked")
-		List<Stock> stocks = (List<Stock>) getEntityManager().createQuery("SELECT s FROM Stock s").getResultList();
-		return stocks;
-	}
-
 }

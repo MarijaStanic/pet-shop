@@ -7,6 +7,4 @@ import stanic.marija.model.Order;
 
 public interface OrderDao extends GenericDao<Integer, Order>{
 
-	List<Order> getOrders();
-
 }

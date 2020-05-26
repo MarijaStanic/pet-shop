@@ -19,18 +19,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public List<Customer> getCustomers() {
-		return customerDao.getCustomers();
+		return customerDao.findAll();
 	}
 
 	@Override
 	public void saveCustomer(Customer customer) {
-		customerDao.saveCustomer(customer);
+		customerDao.persist(customer);
 
 	}
 
 	@Override
 	public Customer updateCustomer(Customer customer) {
-		Customer entity = customerDao.findById(customer.getId());
+		Customer entity = customerDao.getByKey(customer.getId());
 		if (entity != null) {
 			entity.setFirstName(customer.getFirstName());
 			entity.setLastName(customer.getLastName());
@@ -44,15 +44,14 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer findById(int id) {
-		return customerDao.findById(id);
+	public Customer findById(Integer id) {
+		return customerDao.getByKey(id);
 	}
 
 	@Override
-	public void deleteCustomerById(int id) {
-		Customer customer = customerDao.findById(id);
+	public void deleteCustomerById(Integer id) {
+		Customer customer = customerDao.getByKey(id);
 		customerDao.delete(customer);
-
 	}
 
 }

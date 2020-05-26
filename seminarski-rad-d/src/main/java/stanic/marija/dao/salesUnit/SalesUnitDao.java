@@ -7,10 +7,5 @@ import stanic.marija.model.SalesUnit;
 
 public interface SalesUnitDao extends GenericDao<Integer, SalesUnit> {
 	
-	List<SalesUnit> getSalesUnits();
-
-	void saveSalesUnit(SalesUnit salesUnit);
-
-	SalesUnit findById(int id);
 
 }

@@ -12,7 +12,7 @@ public interface UserService {
     
 	void deleteUserByUsername(String username);
 
-	User findById(int id);
+	User findById(Integer id);
 	
 	User findByUsername(String username);
     
@@ -20,9 +20,7 @@ public interface UserService {
     
     boolean isUsernameUnique(Integer id, String username);
 
-	boolean isUserExist(User user);
+	boolean doesUserExist(User user);
 
-	void deleteAllUsers();
-
-	void deleteUserById(int id);
+	void deleteUserById(Integer id);
 }

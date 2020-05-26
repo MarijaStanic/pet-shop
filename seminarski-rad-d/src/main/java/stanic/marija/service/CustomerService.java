@@ -12,7 +12,7 @@ public interface CustomerService {
 
 	Customer updateCustomer(Customer customer);
 
-	Customer findById(int id);
+	Customer findById(Integer id);
 
-	void deleteCustomerById(int id);
+	void deleteCustomerById(Integer id);
 }

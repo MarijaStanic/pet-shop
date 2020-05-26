@@ -6,15 +6,15 @@ import stanic.marija.model.Stock;
 
 public interface StockService {
 
-	List<Stock> getStocksForSalesUnit(int id);
+	List<Stock> getStocksForSalesUnit(Integer id);
 
 	void saveStock(Stock stock);
 
 	Stock updateStock(Stock stock);
 
-	void deleteStockById(int id);
+	void deleteStockById(Integer id);
 
 	List<Stock> getStocks();
 	
-	Stock findById(int id);
+	Stock findById(Integer id);
 }

@@ -9,6 +9,4 @@ public interface StockDao extends GenericDao<Integer, Stock> {
 
 	List<Stock> getStocksForSalesUnit(int id);
 
-	List<Stock> getStocks();
-
 }

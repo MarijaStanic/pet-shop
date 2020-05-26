@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> getProducts() {
-		return productDao.getProducts();
+		return productDao.findAll();
 	}
 
 	@Override
@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product updateProduct(Product product) {
-		Product entity = productDao.findById(product.getId());
+		Product entity = productDao.getByKey(product.getId());
 		if (entity != null) {
 			entity.setName(product.getName());
 			entity.setType(product.getType());
@@ -44,8 +44,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void deleteProductById(int id) {
-		Product product = productDao.findById(id);
+	public void deleteProductById(Integer id) {
+		Product product = productDao.getByKey(id);
 		productDao.delete(product);
 	}
 

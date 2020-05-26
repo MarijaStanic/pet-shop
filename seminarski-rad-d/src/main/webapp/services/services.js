@@ -6,7 +6,7 @@ app.factory('sessionService', function sessionService($http) {
 	var sessionService = {};
 
 	var getLoggedUser = function() {
-		return $http.get('/seminarski-rad-d/user-login').then(function(response) {
+		return $http.get('/seminarski-rad-d/logged').then(function(response) {
 			loggedUser = response.data;
 			console.log(response);
 		});

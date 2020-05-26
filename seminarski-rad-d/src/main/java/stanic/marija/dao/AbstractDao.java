@@ -2,6 +2,7 @@ package stanic.marija.dao;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,5 +37,9 @@ public abstract class AbstractDao<PK extends Serializable, T> implements Generic
 
 	public void delete(T entity) {
 		entityManager.remove(entity);
+	}
+	
+	public List<T> findAll() {
+		return entityManager.createQuery("from " + persistentClass.getName()).getResultList();
 	}
 }

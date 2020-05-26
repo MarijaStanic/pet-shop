@@ -7,8 +7,5 @@ import stanic.marija.model.Product;
 
 public interface ProductDao extends GenericDao<Integer, Product>{
 
-	List<Product> getProducts();
-
-	Product findById(int id);
 
 }

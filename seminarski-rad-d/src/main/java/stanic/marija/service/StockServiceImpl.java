@@ -18,7 +18,7 @@ public class StockServiceImpl implements StockService {
 	StockDao stockDao;
 
 	@Override
-	public List<Stock> getStocksForSalesUnit(int id) {
+	public List<Stock> getStocksForSalesUnit(Integer id) {
 		return stockDao.getStocksForSalesUnit(id);
 	}
 
@@ -40,18 +40,18 @@ public class StockServiceImpl implements StockService {
 	}
 
 	@Override
-	public void deleteStockById(int id) {
+	public void deleteStockById(Integer id) {
 		Stock stock = stockDao.getByKey(id);
 		stockDao.delete(stock);
 	}
 
 	@Override
 	public List<Stock> getStocks() {
-		return stockDao.getStocks();
+		return stockDao.findAll();
 	}
 
 	@Override
-	public Stock findById(int id) {
+	public Stock findById(Integer id) {
 		return stockDao.getByKey(id);
 	}
 
